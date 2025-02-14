@@ -12,6 +12,7 @@
     "bcrypt": "^5.1.1",
     "better-auth": "^1.1.14",
     "cloudinary": "^2.5.1",
+    "jose": "^5.9.6",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "next": "15.1.6",
@@ -21,6 +22,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
