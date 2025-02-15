@@ -1,9 +1,7 @@
-import { parseErrors } from "@/helpers/parseErrors";
 import { apiResponse } from "@/lib/apiResponse";
 import { connectDB } from "@/lib/connectDB";
 import { getSession } from "@/lib/session";
 import { User } from "@/models/user-model";
-import { changePasswordSchema } from "@/schemas/change-password-schema";
 import bcrypt from "bcrypt";
 import { NextRequest } from "next/server";
 
@@ -12,27 +10,28 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const session = await getSession();
-    if (!session?.token)
-      return apiResponse({
-        status: 403,
-        message: "Unauthorized request",
-      });
     if (!session)
       return apiResponse({
         status: 403,
         message: "Unauthorized request!",
       });
     const body = await request.json();
-    const parsedData = changePasswordSchema.safeParse(body);
+    const { oldPassword, newPassword } = body;
 
-    if (!parsedData.success)
+    if (!oldPassword) {
       return apiResponse({
+        success: false,
+        message: "Please provide old password to set new one",
         status: 400,
-        message: "Invalid data.",
-        error: parseErrors(parsedData.error),
       });
-
-    const { oldPassword, newPassword } = parsedData.data;
+    }
+    if (!newPassword) {
+      return apiResponse({
+        success: false,
+        message: "Please provide new password",
+        status: 400,
+      });
+    }
 
     const user = await User.findById(session.id);
     if (!user)

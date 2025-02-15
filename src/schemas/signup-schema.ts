@@ -12,7 +12,7 @@ export const signupSchema = z.object({
   registerationNo: z
     .string()
     .trim()
-    .min(15, "Please enter your university registeration no")
-    .max(18, "registeration number must be below 18 characters"),
+    .min(15, "Registration ID must be at least 15 characters")
+    .max(18, "Registration ID must be at most 18 characters"),
   role: z.enum(["student", "teacher"]),
 });

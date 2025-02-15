@@ -13,6 +13,8 @@ interface IUserModel extends Document {
   registerationNo?: string;
   role: ROLE;
   refreshToken?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const userSchema: Schema<IUserModel> = new Schema({

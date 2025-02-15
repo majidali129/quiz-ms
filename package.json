@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "better-auth": "^1.1.14",
+    "better-auth": "^1.1.18",
     "cloudinary": "^2.5.1",
     "jose": "^5.9.6",
     "jsonwebtoken": "^9.0.2",

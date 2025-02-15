@@ -73,8 +73,9 @@ export const getSession = async () => {
   const payload = await decrypt(token, process.env.ACCESS_TOKEN_SECRET!);
   const id: string = payload.id;
   const user = await User.findById(id).select("-refreshToken -password -__v");
+  const isTeacher = user?.role === ROLE.teacher;
 
-  return { token, id, role: user?.role, user };
+  return { token, id, role: user?.role, user, isTeacher };
 };
 
 export const verifySession = async () => {
@@ -87,17 +88,6 @@ export const verifySession = async () => {
   };
 };
 
-export const getRole = async (): Promise<ROLE | undefined> => {
-  const session = await getSession();
-
-  return session?.role;
-};
-
-export const roleIsTeacher = async (requiredRole: ROLE): Promise<boolean> => {
-  const userRole = await getRole();
-  return userRole === requiredRole;
-};
-
 export const setCookies = async (aToken: string, rToken: string) => {
   const cookieStore = await cookies();
   const options = { secure: true, httpOnly: true, sameSite: true };
@@ -108,9 +98,8 @@ export const setCookies = async (aToken: string, rToken: string) => {
 
 export const deleteSession = async () => {
   const cookieStore = await cookies();
-  cookieStore.set("accessToken", "");
-  cookieStore.set("refreshToken", "");
-
+  cookieStore.delete("accessToken");
+  cookieStore.delete("refreshToken");
   // & redirect user to login
 };
 

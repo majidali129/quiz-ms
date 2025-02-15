@@ -6,11 +6,12 @@ import { signupSchema } from "@/schemas/signup-schema";
 import bcrypt from "bcrypt";
 import { NextRequest } from "next/server";
 
-export default async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {
   connectDB();
   try {
-    const formData = await request.formData();
-    const parsedUserData = signupSchema.safeParse(Object.fromEntries(formData));
+    const body = await request.json();
+    const parsedUserData = signupSchema.safeParse(body);
+    console.log(parsedUserData.data);
 
     if (!parsedUserData.success)
       return apiResponse({
