@@ -3,7 +3,7 @@ import { z } from "zod";
 export const quizSchema = z.object({
   title: z.string().min(5, "Quiz title must be 5 characters long"),
   description: z.string().optional(),
-  courseId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid course ID"),
+  course: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid course ID"),
   questions: z
     .array(
       z.object({

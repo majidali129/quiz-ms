@@ -13,6 +13,7 @@ export const signupSchema = z.object({
     .string()
     .trim()
     .min(15, "Registration ID must be at least 15 characters")
-    .max(18, "Registration ID must be at most 18 characters"),
+    .max(18, "Registration ID must be at most 18 characters")
+    .optional(),
   role: z.enum(["student", "teacher"]),
 });

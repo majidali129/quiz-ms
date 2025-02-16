@@ -9,7 +9,7 @@ interface IQuestion {
 interface IQuiz extends Document {
   title: string;
   description?: string;
-  courseId: ObjectId;
+  course: ObjectId;
   questions: Array<IQuestion>;
   createdBy: string; // it'll be teacher userName
   createdAt: Date;
@@ -49,7 +49,7 @@ const quizSchema: Schema<IQuiz> = new Schema(
       type: String,
       trim: true,
     },
-    courseId: {
+    course: {
       type: Types.ObjectId,
       ref: "Course",
       required: true,

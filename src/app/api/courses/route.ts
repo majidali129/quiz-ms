@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         message: "Course with this title already exists",
       });
 
-    const newCourse = Course.create({
+    const newCourse = await Course.create({
       ...parsedCourseData.data,
       instructor: session.id,
     });
@@ -70,7 +70,6 @@ export async function GET() {
   await connectDB();
 
   try {
-    // const { isAuthenticated } = await verifySession();
     const session = await getSession();
     if (!session)
       return apiResponse({

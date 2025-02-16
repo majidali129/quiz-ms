@@ -2,7 +2,7 @@ import mongoose, { Document, Model, ObjectId, Schema, Types } from "mongoose";
 
 interface ICourseEnrollment extends Document {
   course: ObjectId;
-  student: ObjectId;
+  student: ObjectId; // this can be either any student/user or course creator itself ( as a student )
   enrollmentDate: Date;
   enrollmentStatus: "active" | "completed" | "dropped";
   updatedAt: Date;

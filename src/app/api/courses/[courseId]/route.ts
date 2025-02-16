@@ -110,7 +110,10 @@ export async function GET(
       });
     }
 
-    const course = await Course.findById(courseId).lean();
+    const course = await Course.findById(courseId).lean().populate({
+      path: "instructor",
+      select: "username fullName id",
+    });
 
     if (!course)
       return apiResponse({
@@ -131,6 +134,7 @@ export async function GET(
   }
 }
 
+// TODO: if this course is deleted, all of its enrollments should also be dropped
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ courseId: string }> }

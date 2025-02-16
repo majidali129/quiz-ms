@@ -25,7 +25,6 @@ export async function POST(
     const parsedCourseEnrollmentData =
       courseEnrollmentSchema.safeParse(courseEnrollmentData);
     if (!parsedCourseEnrollmentData.success) {
-      console.log("Invalid course enrollment data");
       return apiResponse({
         success: false,
         message: "Invalid course enrollment data",
@@ -40,8 +39,8 @@ export async function POST(
         status: 400,
       });
     }
-    // check if student already enrolled
-    const isAlreadyEnrolled = await CourseEnrollment.find({
+    // check if currently logged In student already enrolled
+    const isAlreadyEnrolled = await CourseEnrollment.findOne({
       course: courseId,
       student: session.id,
     });
@@ -55,6 +54,7 @@ export async function POST(
     const courseEnrollment = await CourseEnrollment.create({
       ...parsedCourseEnrollmentData.data,
       student: session.id,
+      course: courseId,
     });
 
     if (!courseEnrollment)
@@ -77,7 +77,7 @@ export async function POST(
   }
 }
 
-// handle all enrolled couses by student
+// handle all enrolled courses by student
 export async function GET() {
   await connectDB();
 

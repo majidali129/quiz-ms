@@ -22,7 +22,9 @@ export async function GET(
         status: 400,
       });
 
-    const quiz = await Quiz.findById(quizId);
+    const quiz = await Quiz.findById(quizId)
+      .lean()
+      .populate({ path: "course", select: "title category level _id" });
 
     if (!quiz) {
       return apiResponse({
@@ -34,6 +36,7 @@ export async function GET(
 
     return apiResponse({
       message: "Quiz fetched successfully",
+      data: quiz,
     });
   } catch (error) {
     console.log("Error while getting the quiz::", error);
