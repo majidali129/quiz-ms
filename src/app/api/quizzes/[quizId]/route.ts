@@ -41,15 +41,12 @@ export async function GET(
       questionText: question.questionText,
       options: question.options,
     }));
-    const answers = quiz.questions.map((question) => question.correctOption);
-    console.log("answers", answers);
 
     return apiResponse({
       message: "Quiz fetched successfully",
       data: {
         quizType: quiz.quizType,
         totalQuestions: quiz.questions.length,
-        answers,
         quiz: { ...quiz, questions },
       },
     });
