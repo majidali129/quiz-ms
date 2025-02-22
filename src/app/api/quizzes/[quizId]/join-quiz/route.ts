@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
 
     const { payload } = await validateQuizSession(quizSession);
 
+    cookieStore.delete("quizJoinSession");
     return apiResponse({
       message: "Congrats! You can now join the quiz.",
       data: { quizId: payload.id },
