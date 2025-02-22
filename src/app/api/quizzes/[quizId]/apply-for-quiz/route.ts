@@ -1,11 +1,9 @@
 import calculateTimeDifference from "@/helpers/calculateTimeDifference";
 import { isMongoId } from "@/helpers/isMongoId";
-import { parseErrors } from "@/helpers/parseErrors";
 import { apiResponse } from "@/lib/apiResponse";
 import { connectDB } from "@/lib/connectDB";
 import { getSession } from "@/lib/session";
 import { Quiz } from "@/models/quiz-model";
-import { applyQuizSchema } from "@/schemas/quiz-apply-schema";
 import { isAfter, isBefore, isSameDay } from "date-fns";
 import { SignJWT } from "jose";
 import { cookies } from "next/headers";
@@ -34,11 +32,15 @@ const setQuizJoinCookie = async (id: string, expiry: string) => {
   });
 };
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ quizId: string }> }
+) {
   await connectDB();
 
   try {
     const session = await getSession();
+    const quizId = (await params).quizId;
     if (!session) {
       return apiResponse({
         message: "Unauthorized request. Please login to proceed",
@@ -46,19 +48,14 @@ export async function POST(req: NextRequest) {
         success: false,
       });
     }
-
-    const body = await req.json();
-    const parsedData = applyQuizSchema.safeParse(body);
-    if (!parsedData.success) {
+    if (!quizId) {
       return apiResponse({
         message: "Quiz ID required or invalid ID",
         success: false,
         status: 400,
-        error: parseErrors(parsedData.error),
       });
     }
 
-    const quizId = parsedData.data.quizId;
     if (!isMongoId(quizId)) {
       return apiResponse({
         message: "Invalid quiz ID",

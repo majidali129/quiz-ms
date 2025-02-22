@@ -1,6 +1,11 @@
 import { z } from "zod";
 
 export const quizSchema = z.object({
+  quizType: z
+    .enum(["Subjective", "Objective"], {
+      message: "Quiz type can be either Subjective or Objective",
+    })
+    .default("Objective"),
   title: z.string().min(5, "Quiz title must be 5 characters long"),
   description: z.string().optional(),
   course: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid course ID"),

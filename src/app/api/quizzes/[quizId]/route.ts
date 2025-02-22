@@ -3,6 +3,7 @@ import { parseErrors } from "@/helpers/parseErrors";
 import { apiResponse } from "@/lib/apiResponse";
 import { connectDB } from "@/lib/connectDB";
 import { getSession } from "@/lib/session";
+import { Course } from "@/models/course-model";
 import { Quiz } from "@/models/quiz-model";
 import { quizSchema } from "@/schemas/quiz-schema";
 import { NextRequest } from "next/server";
@@ -22,9 +23,11 @@ export async function GET(
         status: 400,
       });
 
-    const quiz = await Quiz.findById(quizId)
-      .lean()
-      .populate({ path: "course", select: "title category level _id" });
+    const quiz = await Quiz.findById(quizId).lean().populate({
+      path: "course",
+      select: "title category level _id",
+      model: Course,
+    });
 
     if (!quiz) {
       return apiResponse({
@@ -34,9 +37,21 @@ export async function GET(
       });
     }
 
+    const questions = quiz.questions.map((question) => ({
+      questionText: question.questionText,
+      options: question.options,
+    }));
+    const answers = quiz.questions.map((question) => question.correctOption);
+    console.log("answers", answers);
+
     return apiResponse({
       message: "Quiz fetched successfully",
-      data: quiz,
+      data: {
+        quizType: quiz.quizType,
+        totalQuestions: quiz.questions.length,
+        answers,
+        quiz: { ...quiz, questions },
+      },
     });
   } catch (error) {
     console.log("Error while getting the quiz::", error);

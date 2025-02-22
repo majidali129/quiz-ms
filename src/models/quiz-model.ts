@@ -6,6 +6,11 @@ interface IQuestion {
   correctOption: number;
 }
 
+enum QuizType {
+  Objective = "Objective",
+  Subjective = "Subjective",
+}
+
 interface IQuizConstraints {
   duration: number;
   maxAttempts: number;
@@ -18,6 +23,7 @@ interface IQuizConstraints {
 }
 
 export interface IQuiz extends Document {
+  quizType: QuizType;
   title: string;
   description?: string;
   course: ObjectId;
@@ -98,6 +104,11 @@ const constraintsSchema = new Schema<IQuizConstraints>({
 
 const quizSchema: Schema<IQuiz> = new Schema(
   {
+    quizType: {
+      type: String,
+      required: [true, "Quiz type is required"],
+      default: QuizType.Objective,
+    },
     title: {
       type: String,
       required: true,

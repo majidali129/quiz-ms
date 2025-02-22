@@ -1,12 +1,6 @@
 import { z } from "zod";
 
-const quizIdSchema = z
-  .string()
-  .min(1, "Please provide quiz id to define rules")
-  .regex(/^[0-9a-fA-F]{24}$/, "Invalid quiz ID format");
-
 export const quizConstraintsSchema = z.object({
-  quiz: quizIdSchema,
   duration: z
     .number()
     .min(1, "Minimum duration is 1 minute")

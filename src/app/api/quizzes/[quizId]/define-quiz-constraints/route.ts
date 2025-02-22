@@ -1,3 +1,4 @@
+import { isMongoId } from "@/helpers/isMongoId";
 import { parseErrors } from "@/helpers/parseErrors";
 import { apiResponse } from "@/lib/apiResponse";
 import { connectDB } from "@/lib/connectDB";
@@ -6,16 +7,27 @@ import { Quiz } from "@/models/quiz-model";
 import { quizConstraintsSchema } from "@/schemas/quiz-constraints-schema";
 import { NextRequest } from "next/server";
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ quizId: string }> }
+) {
   await connectDB();
 
   try {
     const session = await getSession();
+    const quizId = (await params).quizId;
+
     if (!session)
       return apiResponse({
         message: "Unauthorized request",
         success: false,
         status: 401,
+      });
+
+    if (!isMongoId(quizId))
+      return apiResponse({
+        message: "Invalid quiz ID",
+        status: 400,
       });
 
     if (!session.isTeacher)
@@ -37,8 +49,8 @@ export async function PATCH(req: NextRequest) {
       });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { quiz: _, ...filteredConstraints } = parsedConstraitsData.data;
-    const quiz = await Quiz.findById(parsedConstraitsData.data.quiz);
+    const constraints = parsedConstraitsData.data;
+    const quiz = await Quiz.findById(quizId);
     if (!quiz)
       return apiResponse({
         message: "Quiz not found.",
@@ -46,8 +58,8 @@ export async function PATCH(req: NextRequest) {
       });
 
     quiz.constraints = {
-      ...filteredConstraints,
-      startDate: new Date(filteredConstraints.startDate),
+      ...constraints,
+      startDate: new Date(constraints.startDate),
     };
     await quiz.save();
 

@@ -110,5 +110,6 @@ export const deleteSession = async () => {
   const cookieStore = await cookies();
   cookieStore.delete("accessToken");
   cookieStore.delete("refreshToken");
+  cookieStore.delete("quizJoinSession");
   // & redirect user to login
 };
