@@ -1,5 +1,5 @@
 import { ROLE, User } from "@/models/user-model";
-import { JWTPayload, SignJWT, jwtVerify } from "jose";
+import { JWTPayload, SignJWT, errors, jwtVerify } from "jose";
 import mongoose from "mongoose";
 import { cookies } from "next/headers";
 import { connectDB } from "./connectDB";
@@ -23,11 +23,20 @@ const encrypt = async (
 export const decrypt = async (
   token: string,
   secret: string
-): Promise<IPayload> => {
-  const key = new TextEncoder().encode(secret);
-  const { payload } = await jwtVerify(token, key);
+): Promise<IPayload | null> => {
+  try {
+    const key = new TextEncoder().encode(secret);
 
-  return payload as { id: string; exp: number };
+    const session = await jwtVerify(token, key);
+    return session.payload as { id: string };
+  } catch (error) {
+    if (error instanceof errors.JWSSignatureVerificationFailed) {
+      throw new Error("Session expired. Please login again.");
+    }
+
+    return null;
+  }
+  //  payload: { id: '67b0316a55b91a0d2e28cf77', iat: 1739777251, exp: 1739863651 }
 };
 
 export const generateAccessToken = async (userId: string) => {
@@ -71,6 +80,7 @@ export const getSession = async () => {
   if (!token) return null;
 
   const payload = await decrypt(token, process.env.ACCESS_TOKEN_SECRET!);
+  if (!payload) return null;
   const id: string = payload.id;
   const user = await User.findById(id).select("-refreshToken -password -__v");
   const isTeacher = user?.role === ROLE.teacher;
@@ -102,5 +112,3 @@ export const deleteSession = async () => {
   cookieStore.delete("refreshToken");
   // & redirect user to login
 };
-
-// TODO: refresh Access token on session expiry
