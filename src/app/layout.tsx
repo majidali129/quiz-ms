@@ -1,5 +1,7 @@
+import { UserRoleStoreProvider } from "@/providers/user-role-store-provider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,11 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" className="dark">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <UserRoleStoreProvider>{children}</UserRoleStoreProvider>
+        <Toaster />
       </body>
     </html>
   );
