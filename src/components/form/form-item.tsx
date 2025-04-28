@@ -2,21 +2,25 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
 import FieldError from "./field-error";
 import { ActionState } from "./utils/to-action-state";
 
 type FormItemProps = {
+  textArea?: boolean;
   label?: string;
   name: string;
   placeholder?: string;
   required?: boolean;
-  type?: "email" | "password" | "text" | "number" | "date" | "file" | "hidden" | "submit" | "reset";
+  type?: "email" | "password" | "text" | "number" | "date" | "time" | "file" | "hidden" | "submit" | "reset";
   className?: string;
+  min?: string;
+  max?: string;
   isLogin?: boolean;
   formState: ActionState;
 };
 
-const FormItem = ({ label, name, placeholder, required, type, className, isLogin = false, formState }: FormItemProps) => {
+const FormItem = ({ label, name, placeholder, min, max, required, type, textArea = false, className, isLogin = false, formState }: FormItemProps) => {
   const renderLabel =
     type === "password" ? (
       <div className="flex items-center">
@@ -33,7 +37,11 @@ const FormItem = ({ label, name, placeholder, required, type, className, isLogin
   return (
     <div className={cn("grid gap-1.5", className)}>
       {renderLabel}
-      <Input autoComplete="off" id={name} name={name} type={type} placeholder={placeholder} required={required} defaultValue={formState?.payload?.get(name) as string} />
+      {textArea ? (
+        <Textarea name={name} required={required} defaultValue={formState?.payload?.get(name) as string} placeholder={placeholder} />
+      ) : (
+        <Input autoComplete="off" min={min} max={max} id={name} name={name} type={type} placeholder={placeholder} required={required} defaultValue={formState?.payload?.get(name) as string} />
+      )}
       {/* {formState?.fieldErrors && <FieldError name={name} actionState={formState} />} */}
       <FieldError name={name} actionState={formState} />
       {}

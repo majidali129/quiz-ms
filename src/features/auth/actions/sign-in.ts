@@ -1,41 +1,43 @@
 "use server";
 
+import { signIn } from "@/auth";
 import { ActionState, fromErrorToActionState, toActionState } from "@/components/form/utils/to-action-state";
-import { z } from "zod";
+import { signInSchema } from "@/schemas/sign-in-schema";
+import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
+import { ZodError } from "zod";
 
-const signInSchema = z
-  .object({
-    role: z.enum(["student", "teacher"], { message: "Role must be either 'student' or 'teacher'" }),
-    email: z.string().email().optional(),
-    password: z.string().min(8, "Password  must be at least 8 character long.").max(191, "Password must not exceed 191 characters"),
-    registerationId: z.string().optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.role === "student" && !data.registerationId) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Registeration ID is required for students.",
-        path: ["registerationId"],
-      });
-    }
+// TODO: handle login for role base;
 
-    if (data.role === "teacher" && !data.email) {
-      ctx.addIssue({
-        code: "custom",
-        message: " Email is required",
-        path: ["email"],
-      });
-    }
-  });
+export const loginUserAction = async (_initialState: ActionState, formData: FormData) => {
+  const data = await signInSchema.safeParse(Object.fromEntries(formData));
 
-export const loginUser = async (_initialState: ActionState, formData: FormData) => {
   try {
-    const { email, password, role, registerationId } = await signInSchema.parse(Object.fromEntries(formData));
-    console.log(email);
+    await signIn("credentials", {
+      email: data.data?.email,
+      password: data.data?.password,
+      role: data.data?.role,
+      redirect: false,
+    });
   } catch (error) {
-    console.log(error);
-    return fromErrorToActionState(error, formData);
+    if (error instanceof ZodError) {
+      return fromErrorToActionState(error, formData);
+    }
+
+    if (error instanceof AuthError) {
+      switch (error.cause) {
+        case "CredentialsSignin":
+          return toActionState("ERROR", "Invalid credentials", formData);
+        default:
+          return toActionState("ERROR", "Something went wrong", formData);
+      }
+    }
   }
 
-  return toActionState("SUCCESS", "User registered successfully");
+  redirect("/dashboard");
+};
+
+export const signInWithGoogle = async () => {
+  console.log("google signin called!!! ");
+  await signIn("google", { redirectTo: "/dashboard" });
 };

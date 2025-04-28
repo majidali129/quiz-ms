@@ -1,5 +1,6 @@
 "use client";
 
+import { Form } from "@/components/form/form";
 import { FormItem } from "@/components/form/form-item";
 import SubmitButton from "@/components/form/submit-button";
 import { Empty_Action_State } from "@/components/form/utils/to-action-state";
@@ -14,7 +15,7 @@ export const SignUpForm = () => {
   const isStudent = role === "student";
 
   return (
-    <form action={signUp}>
+    <Form actionState={formState} onSuccess={() => console.log("Account created succesfully")} action={signUp}>
       <div className="flex flex-col gap-4">
         <input type="hidden" name="role" value={role} defaultValue={formState?.payload?.get("role") as string} />
         <FormItem name="fullName" label="FullName" type="text" required={true} placeholder="John doe" formState={formState} />
@@ -30,6 +31,6 @@ export const SignUpForm = () => {
           Sign In
         </Link>
       </div>
-    </form>
+    </Form>
   );
 };

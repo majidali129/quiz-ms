@@ -12,7 +12,7 @@ type CardCompactProps = {
 
 export const CardCompact = ({ title, description, content, footer, className }: CardCompactProps) => {
   return (
-    <Card className={cn("max-w-[420px] flex self-center w-full py-5", className)}>
+    <Card className={cn("max-w-[370px] flex self-center w-full py-5", className)}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}

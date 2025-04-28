@@ -33,7 +33,7 @@ export const createUserRoleStore = (initialState: UserRoleState = defaultInitial
 
 export const useUserRole = create<UserRoleStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       role: "teacher",
       setRole: (role) => set({ role }),
     }),

@@ -1,10 +1,9 @@
 import { CardCompact } from "@/components/card-compact";
 import SelectUserRole from "@/features/auth/components/select-user-role";
 import { SignInForm } from "@/features/auth/components/sign-in-form";
-import { SignUpSignIn } from "@/features/auth/components/sign-up-sign-in";
 import { KeyRound } from "lucide-react";
 
-const AccountPage = () => {
+const SignInPage = () => {
   const title = (
     <div className="space-y-5">
       <SelectUserRole />
@@ -16,8 +15,8 @@ const AccountPage = () => {
   );
   return (
     <div className="flex border min-h-screen flex-1 items-center justify-center flex-col">
-      <CardCompact content={<SignInForm />} title={title} />
+      <CardCompact content={<SignInForm />} title={title} className="py-6" />
     </div>
   );
 };
-export default AccountPage;
+export default SignInPage;

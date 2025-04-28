@@ -126,4 +126,8 @@
   .active-auth-tab {
     @apply py-3 border-b-3 border-b-border data-[state=active]:border-b-3 data-[state=active]:border-b-primary data-[state=active]:rounded-none data-[state=active]:text-primary data-[state=active]:shadow-none;
   }
+
+  .hide-scroll::-webkit-scrollbar {
+    width: 0px;
+  }
 }
