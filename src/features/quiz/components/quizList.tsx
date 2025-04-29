@@ -1,12 +1,15 @@
+import { getQuizzes } from "@/features/queries/get-quizzes";
 import { Quiz } from "../types";
 import { ListHeader } from "./list-header";
 import { QuizCard } from "./quiz-card";
 
-type QuizListProps = {
-  quizzes: Quiz[];
-};
+// type QuizListProps = {
+//   quizzes: Quiz[];
+// };
 
-const QuizList = ({ quizzes }: QuizListProps) => {
+const QuizList = async () => {
+  const quizzes = (await getQuizzes()) as Quiz[];
+  console.log(quizzes);
   return (
     <div className="p-4 space-y-5 py-5">
       <ListHeader heading="Quizzes" dialogTitle="Create New Quiz" dialogDescription="Create a new quiz for your students" dialogTriggerText="Create Quiz" />

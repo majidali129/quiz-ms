@@ -1,8 +1,12 @@
-import { getQuizzes } from "@/features/queries/get-quizzes";
 import QuizList from "@/features/quiz/components/quizList";
+import { Suspense } from "react";
 
 const TeacherQuizzesPage = async () => {
-  const quizzes = await getQuizzes();
-  return <QuizList quizzes={quizzes} />;
+  return (
+    <Suspense fallback={<div>Loading ....</div>}>
+      <QuizList />
+    </Suspense>
+  );
 };
+
 export default TeacherQuizzesPage;
