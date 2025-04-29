@@ -15,7 +15,7 @@ export const connectDB = async () => {
       return;
     }
 
-    const uri = process.env.MONGODB_URI!;
+    const uri = process.env.MONGODB_URI! || "";
     const connectionInstance = await mongoose.connect(uri);
     connection.isConnected = connectionInstance.connection;
   } catch (error) {
