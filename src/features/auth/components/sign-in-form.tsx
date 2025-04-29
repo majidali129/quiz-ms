@@ -38,7 +38,7 @@ export const SignInForm = () => {
         <div className="py-4">
           <Button onClick={signInWithGoogle} variant="outline" className="w-full flex items-center justify-center gap-3">
             <span className="h-6 w-6">
-              <Image className="w-full h-full" src={google.src} alt="google_icon" />
+              <Image className="w-full h-full" src={google.src} alt="google_icon" width={100} height={100} />
             </span>
             Continue with google
           </Button>

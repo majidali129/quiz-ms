@@ -38,14 +38,14 @@ const RecentResults = () => {
 
             <div>
               <h4 className="text-[.9rem]">John Doe</h4>
-              <p className="flex items-center text-muted-foreground gap-1 text-[.8rem]">
+              <div className="flex items-center text-muted-foreground gap-1 text-[.8rem]">
                 Mathematics
                 <div className="flex items-center">
                   <span> 101 </span>
                   <Dot className="w-4 h-4" />
                   <span>{45}%</span>
                 </div>
-              </p>
+              </div>
             </div>
           </div>
         </ul>

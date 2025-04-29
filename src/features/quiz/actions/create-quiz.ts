@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { ActionState, fromErrorToActionState, toActionState } from "@/components/form/utils/to-action-state";
 import { connectDB } from "@/lib/connect-db";
 import { Quiz } from "@/models/quiz-model";
-import { teacherQuizesPath } from "@/paths/paths";
+import { quizzesPath } from "@/paths/paths";
 import { revalidatePath } from "next/cache";
 import { z, ZodError } from "zod";
 
@@ -56,6 +56,6 @@ export const createQuize = async (_initialState: ActionState, formData: FormData
     }
   }
 
-  revalidatePath(teacherQuizesPath());
+  revalidatePath(quizzesPath());
   return toActionState("SUCCESS", "Quiz created successfully");
 };

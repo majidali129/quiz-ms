@@ -11,7 +11,7 @@ type SidebarItemProps = {
 
 const SidebarItem = ({ item: { href, label, icon } }: SidebarItemProps) => {
   const pathName = usePathname();
-  const isActive = pathName === href;
+  const isActive = pathName.startsWith(href);
   return (
     <Link
       href={href}

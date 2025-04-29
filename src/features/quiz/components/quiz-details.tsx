@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { teacherQuizesPath } from "@/paths/paths";
 import { ROLE } from "@/types/index";
 import { useSession } from "next-auth/react";
 import { Quiz, QuizCompleteStatus, QuizDifficulty, QuizType } from "../types";
@@ -88,7 +89,7 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
   return (
     <div className="w-full p-6">
       {/* Back button */}
-      <Button variant="ghost" className="mb-6 pl-0 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-50" onClick={() => router.push("/quizzes")}>
+      <Button variant="ghost" className="mb-6  " onClick={() => router.push(teacherQuizesPath())}>
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Quizzes
       </Button>
@@ -96,7 +97,7 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
       {/* Quiz Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">{quiz.title}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{quiz.title}</h1>
           <div className="flex flex-wrap items-center gap-2 mt-2">
             <Badge variant="outline" className="font-normal">
               {quiz.course}
@@ -111,7 +112,7 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2">
-          {!isTeacher ? (
+          {isTeacher ? (
             <>
               <Button variant="outline" size="sm" className="gap-1">
                 <Edit className="h-4 w-4" />
@@ -351,7 +352,6 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Start Date</p>
                   <p className="font-medium">
                     {formatDate(quiz.startDate)} at {quiz.startTime}
-                    {/* {format(new Date(quiz.startDate), "MMMM d, yyyy")} at {quiz.startTime} */}
                   </p>
                 </div>
               </div>

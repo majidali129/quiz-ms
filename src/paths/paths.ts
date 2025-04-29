@@ -5,8 +5,8 @@ export const signInPath = () => "/sign-in";
 export const forgotPasswordPath = () => "/forgot-password";
 
 export const dashboardPath = () => "/dashboard";
-export const teacherQuizesPath = () => "/teacher/quizzes";
-export const quizPath = (quizId: string) => `/teacher/quizzes/${quizId}`;
+export const quizzesPath = () => "/quizzes";
+export const quizPath = (quizId: string) => `/quizzes/${quizId}`;
 export const coursesPath = () => "/courses";
 export const coursePath = (courseId: string) => `/courses/${courseId}`;
 
