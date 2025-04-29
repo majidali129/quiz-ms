@@ -1,13 +1,13 @@
-import { auth } from "@/auth";
-import { ROLE } from "@/models/user-model";
+// import { auth } from "@/auth";
+// import { ROLE } from "@/models/user-model";
 import { BoxesIcon } from "lucide-react";
 import { sidebar_items } from "../constants";
 import { SidebarItem } from "./sidebar-item";
 
 const Sidebar = async () => {
-  const session = await auth();
+  // const session = await auth();
   // if (!session) return null;
-  const role: ROLE = session?.user.role;
+  // const role: ROLE = session?.user.role;
 
   return (
     <aside className="w-[210px] bg-zinc-900 min-h-screen border-r border-r-primary/10 fixed">
@@ -18,7 +18,7 @@ const Sidebar = async () => {
         </h3>
       </div>
       <ul className="px-3 py-3 space-y-2">
-        {sidebar_items[role].map((item) => (
+        {sidebar_items["teacher"].map((item) => (
           <SidebarItem key={item.href} item={item} />
         ))}
       </ul>
