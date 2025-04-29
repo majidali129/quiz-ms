@@ -6,8 +6,8 @@ import { SidebarItem } from "./sidebar-item";
 
 const Sidebar = async () => {
   const session = await auth();
-  if (!session) return null;
-  const role: ROLE = session.user.role;
+  // if (!session) return null;
+  const role: ROLE = session?.user.role;
 
   return (
     <aside className="w-[210px] bg-zinc-900 min-h-screen border-r border-r-primary/10 fixed">
