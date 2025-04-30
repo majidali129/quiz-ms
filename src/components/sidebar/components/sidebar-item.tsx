@@ -15,7 +15,9 @@ const SidebarItem = ({ item: { href, label, icon } }: SidebarItemProps) => {
   return (
     <Link
       href={href}
-      className={`flex items-center rounded  justify-center lg:justify-start py-2 px-4 gap-2   text-gray-50/90 hover:text-gray-5 ${isActive ? "bg-primary/80 hover:bg-primary" : "bg-zinc-700/40 hover:bg-zinc-700/90"}`}
+      className={`flex items-center rounded  justify-center lg:justify-start py-2 px-4 gap-2   text-sidebar-foreground/90 hover:text-sidebar-foreground ${
+        isActive ? "bg-primary/80 hover:bg-primary" : "bg-zinc-100 dark:bg-zinc-800/40 hover:bg-zinc-200 dark:hover:bg-zinc-800/90"
+      }`}
     >
       {isValidElement(icon) &&
         cloneElement(icon, {

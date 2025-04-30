@@ -4,7 +4,7 @@ import { SidebarItem } from "./sidebar-item";
 
 const Sidebar = async () => {
   return (
-    <aside className="w-[210px] bg-zinc-900 min-h-screen border-r border-r-primary/10 fixed">
+    <aside className="w-[210px] bg-sidebar min-h-screen border-r border-r-primary/10 fixed">
       <div className="w-full px-3 h-15 flex items-center border-b border-border">
         <h3 className="text-lg flex items-center gap-2">
           <BoxesIcon />

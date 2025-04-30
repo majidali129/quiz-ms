@@ -15,7 +15,7 @@ export default async function MainAppLayout({
         <Sidebar />
         <div className="flex-1 min-h-screen flex flex-col lg:ps-[210px] h-full">
           <Header />
-          <div className="h-[calc(100vh-60px)] ">{children}</div>
+          <div className="h-[calc(100vh-60px)] hide-scroll overflow-y-auto">{children}</div>
         </div>
       </div>
     </SessionProvider>

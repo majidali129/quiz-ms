@@ -62,7 +62,7 @@ export const QuizCard = async ({ quiz }: QuizItemProps) => {
   );
 
   return (
-    <Card className={`w-full border-zinc-200 dark:border-zinc-800 transition-all duration-200 gap-3 py-4 `}>
+    <Card className={`w-full border-0 gap-3 py-4 `}>
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>

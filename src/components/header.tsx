@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { signInPath, signUpPath } from "@/paths/paths";
 import Link from "next/link";
 import { AccountDropdown } from "./account-dropdown";
+import { ThemeSwitcher } from "./theme/theme-switcher";
 import { buttonVariants } from "./ui/button";
 
 const Header = async () => {
@@ -9,13 +10,14 @@ const Header = async () => {
 
   if (!session?.user) return null;
   return (
-    <header className="h-15  border-b border-border flex items-center justify-between px-4 sticky top-0 !backdrop-blur-xl">
+    <header className="h-15  border-b border-border flex items-center justify-between px-4 z-40 sticky top-0 bg-zinc-900 !backdrop-blur-xl ">
       <div className="container flex h-16 items-center justify-between">
         <div className="hidden md:block">
           <div className="text-sm text-foreground font-medium">Dashboard</div>
         </div>
 
         <div className="flex items-center gap-4">
+          <ThemeSwitcher />
           {session ? (
             <AccountDropdown session={session} />
           ) : (
