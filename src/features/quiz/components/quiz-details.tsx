@@ -1,19 +1,16 @@
-"use client";
-
 import { format } from "date-fns";
-import { ArrowLeft, Award, BarChart3, Calendar, CheckCircle, Clock, Copy, Edit, Eye, FileQuestion, Play, Repeat, ToggleLeft, ToggleRight, Trash2, User } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { ArrowLeft, Award, BarChart3, Calendar, CheckCircle, Clock, Edit, Eye, FileQuestion, Play, Repeat, Trash2, User } from "lucide-react";
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { auth } from "@/auth";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { teacherQuizesPath } from "@/paths/paths";
+import { quizzesPath } from "@/paths/paths";
 import { ROLE } from "@/types/index";
-import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { deleteQuiz } from "../actions/delete-quiz";
 import { Quiz, QuizCompleteStatus, QuizDifficulty, QuizType } from "../types";
 
 // Sample student attempts data
@@ -47,14 +44,8 @@ const quizStatistics = {
 type QuizDetailsProps = {
   quiz: Quiz;
 };
-export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
-  const router = useRouter();
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const { data: session } = useSession();
-  console.log(session);
-  console.log(quiz);
-
+export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
+  const session = await auth();
   const isTeacher = session?.user.role === ROLE.teacher;
 
   const getDifficultyColor = (difficulty: QuizDifficulty) => {
@@ -86,15 +77,44 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
     return format(date, "MMMM d, yyyy");
   };
 
+  const editButton = (
+    <Button variant="outline" size="sm" className="gap-1">
+      <Edit className="h-4 w-4" />
+      <span className="hidden sm:inline">Edit</span>
+    </Button>
+  );
+
+  const resultsButton = (
+    <form>
+      <Button variant="outline" size="sm" className="gap-1">
+        <Eye className="h-4 w-4" />
+        <span className="hidden sm:inline">Results</span>
+      </Button>
+    </form>
+  );
+
+  const deleteButton = (
+    <form
+      action={async () => {
+        "use server";
+        await deleteQuiz(quiz._id);
+        return; // Explicitly return void
+      }}
+    >
+      <Button type="submit" variant="destructive" size="sm" className="gap-1">
+        <Trash2 className="h-4 w-4" />
+        <span className="hidden sm:inline">Delete</span>
+      </Button>
+    </form>
+  );
+
   return (
-    <div className="w-full p-6">
-      {/* Back button */}
-      <Button variant="ghost" className="mb-6  " onClick={() => router.push(teacherQuizesPath())}>
+    <div className="w-full p-6 space-y-5">
+      <Link href={quizzesPath()} className={buttonVariants({ variant: "ghost" })}>
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Quizzes
-      </Button>
+      </Link>
 
-      {/* Quiz Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-bold text-foreground">{quiz.title}</h1>
@@ -114,38 +134,11 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
         <div className="flex flex-wrap gap-2">
           {isTeacher ? (
             <>
-              <Button variant="outline" size="sm" className="gap-1">
-                <Edit className="h-4 w-4" />
-                <span className="hidden sm:inline">Edit</span>
-              </Button>
-              <Button variant="outline" size="sm" className="gap-1">
-                <Eye className="h-4 w-4" />
-                <span className="hidden sm:inline">Results</span>
-              </Button>
-              <Button variant="outline" size="sm" className="gap-1">
-                <Copy className="h-4 w-4" />
-                <span className="hidden sm:inline">Duplicate</span>
-              </Button>
-              <Button variant="outline" size="sm" className="gap-1">
-                {quiz.isActive ? (
-                  <>
-                    <ToggleRight className="h-4 w-4" />
-                    <span className="hidden sm:inline">Active</span>
-                  </>
-                ) : (
-                  <>
-                    <ToggleLeft className="h-4 w-4" />
-                    <span className="hidden sm:inline">Inactive</span>
-                  </>
-                )}
-              </Button>
-              <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" size="sm" className="gap-1">
-                    <Trash2 className="h-4 w-4" />
-                    <span className="hidden sm:inline">Delete</span>
-                  </Button>
-                </AlertDialogTrigger>
+              {editButton}
+              {resultsButton}
+              {deleteButton}
+              {/* <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogTrigger asChild></AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -156,22 +149,22 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
                     <AlertDialogAction className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
-              </AlertDialog>
+              </AlertDialog> */}
             </>
           ) : (
             <>
               {quiz.completionStatus === "completed" ? (
-                <Button className="gap-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200">
+                <Button>
                   <Eye className="h-4 w-4" />
                   View Results
                 </Button>
               ) : quiz.completionStatus === "in-progress" ? (
-                <Button className="gap-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200">
+                <Button>
                   <Play className="h-4 w-4" />
                   Resume Quiz
                 </Button>
               ) : (
-                <Button className="gap-2 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200">
+                <Button>
                   <Play className="h-4 w-4" />
                   Start Quiz
                 </Button>
@@ -421,24 +414,6 @@ export const QuizDetails = ({ quiz }: QuizDetailsProps) => {
               )}
             </CardContent>
           </Card>
-
-          {isTeacher && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-xl">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
-                  <Eye className="mr-2 h-4 w-4" />
-                  View Student Results
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Export Statistics
-                </Button>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </div>

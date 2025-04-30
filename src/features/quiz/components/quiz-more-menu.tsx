@@ -1,0 +1,84 @@
+"use client";
+
+import { useConfirmDialog } from "@/components/confirm-dailog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { quizPath } from "@/paths/paths";
+import { Edit, Eye, Play, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { ReactNode } from "react";
+import { deleteQuiz } from "../actions/delete-quiz";
+import { Quiz } from "../types";
+
+type QuizMoreMenuProps = {
+  quiz: Quiz;
+  trigger: ReactNode;
+};
+
+export const QuizCardMoreMenu = ({ quiz, trigger }: QuizMoreMenuProps) => {
+  const { data: session } = useSession();
+  const [deleteButton, dialog] = useConfirmDialog({
+    action: deleteQuiz.bind(null, quiz._id),
+    trigger: (
+      <DropdownMenuItem className="text-red-600 dark:text-red-400" onClick={(e) => e.stopPropagation()}>
+        <Trash2 className="mr-2 h-4 w-4" />
+        <span>Delete</span>
+      </DropdownMenuItem>
+    ),
+  });
+  const isTeacher = session?.user.role;
+
+  const editButton = (
+    <DropdownMenuItem>
+      <Edit className="mr-2 h-4 w-4" />
+      <span>Edit Quiz</span>
+    </DropdownMenuItem>
+  );
+
+  const resultsButton = (
+    <DropdownMenuItem>
+      <Eye className="mr-2 h-4 w-4" />
+      <span>View Results</span>
+    </DropdownMenuItem>
+  );
+
+  const pauseResumeButton = (
+    <DropdownMenuItem>
+      <Play className="mr-2 h-4 w-4" />
+      <span>{quiz.completionStatus === "in-progress" ? "Resume Quiz" : "Start Quiz"}</span>
+    </DropdownMenuItem>
+  );
+
+  const viewDetailsButton = (
+    <Link href={quizPath(quiz._id)}>
+      <DropdownMenuItem>
+        <Eye className="mr-2 h-4 w-4" />
+        <span>View Details</span>
+      </DropdownMenuItem>
+    </Link>
+  );
+  return (
+    <>
+      {dialog}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+        <DropdownMenuContent align="end" side="right">
+          {isTeacher ? (
+            <>
+              {editButton}
+              {viewDetailsButton}
+              {resultsButton}
+              <DropdownMenuSeparator />
+              {deleteButton}
+            </>
+          ) : (
+            <>
+              {quiz.completionStatus === "completed" ? { resultsButton } : { pauseResumeButton }}
+              {viewDetailsButton}
+            </>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+};

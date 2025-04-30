@@ -1,8 +1,6 @@
 import { signOut } from "@/features/auth/actions/sign-out";
-import { signInPath } from "@/paths/paths";
 import { LogOut, Settings, User } from "lucide-react";
 import { Session } from "next-auth";
-import { redirect } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";

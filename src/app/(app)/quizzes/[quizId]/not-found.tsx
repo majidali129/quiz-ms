@@ -1,6 +1,6 @@
 import Placeholder from "@/components/placeholder";
 import { Button } from "@/components/ui/button";
-import { teacherQuizesPath } from "@/paths/paths";
+import { quizzesPath } from "@/paths/paths";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -8,7 +8,7 @@ export default function NotFound() {
     <Placeholder
       button={
         <Button asChild variant={"outline"}>
-          <Link href={teacherQuizesPath()}>Go to quizzes</Link>
+          <Link href={quizzesPath()}>Go to quizzes</Link>
         </Button>
       }
       label="We could not find your quiz"

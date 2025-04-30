@@ -33,7 +33,7 @@ export type Question = {
 };
 
 export type Quiz = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   quizType: QuizType;

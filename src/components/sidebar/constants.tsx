@@ -1,4 +1,4 @@
-import { BookOpen, ClipboardList, Clock, HelpCircle, HomeIcon, Settings, Users } from "lucide-react";
+import { BookOpen, ClipboardList, Clock, HelpCircle, HomeIcon, Settings } from "lucide-react";
 export const sidebar_items = {
   teacher: [
     { label: "Dashboard", href: "/dashboard", icon: <HomeIcon /> },
