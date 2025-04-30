@@ -10,7 +10,7 @@ const Header = async () => {
 
   if (!session?.user) return null;
   return (
-    <header className="h-15  border-b border-border flex items-center justify-between px-4 z-40 sticky top-0 bg-zinc-900 !backdrop-blur-xl ">
+    <header className="h-15  border-b border-border flex items-center justify-between px-4 z-40 sticky top-0 bg-sidebar !backdrop-blur-xl ">
       <div className="container flex h-16 items-center justify-between">
         <div className="hidden md:block">
           <div className="text-sm text-foreground font-medium">Dashboard</div>
