@@ -1,14 +1,32 @@
+import { getAuth } from "@/features/auth/queries/get-auth";
+import { getCourses } from "@/features/queries/get-courses";
 import { getQuizzes } from "@/features/queries/get-quizzes";
-import { Quiz } from "../types";
-import { ListHeader } from "./list-header";
+import { isTeacher } from "@/features/utils/is-teacher";
+import { cn } from "@/lib/utils";
+import { CreateQuizForm } from "./create-quiz-form";
+import { DialogShell } from "./dialog-shell";
 import { QuizCard } from "./quiz-card";
+type CourseListProps = {
+  className?: string;
+};
 
-const QuizList = async () => {
-  const quizzes = (await getQuizzes()) as Quiz[];
+const QuizList = async ({ className }: CourseListProps) => {
+  const quizzes = await getQuizzes();
+  const user = await getAuth();
+  const courses = getCourses();
+
   return (
-    <div className="p-4 space-y-5 py-5">
-      <ListHeader heading="Quizzes" dialogTitle="Create New Quiz" dialogDescription="Create a new quiz for your students" dialogTriggerText="Create Quiz" />
-      <ul className="grid grid-cols-3 lg:gap-x-3.5 gap-y-3">{quizzes.length && quizzes.map((quiz) => <QuizCard key={quiz._id} quiz={quiz} />)}</ul>
+    <div className={cn("p-4 space-y-7", className)}>
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl tracking-wide">Quizzes</h2>
+        {isTeacher(user.role) && (
+          <DialogShell title="Create new quiz" description="Create a new quiz for your students" triggerText="Create Quiz">
+            <CreateQuizForm coursesPromise={courses} />
+          </DialogShell>
+        )}
+      </div>
+
+      <ul className="grid grid-cols-3 lg:gap-x-3.5 gap-y-3">{quizzes.length && quizzes.map((quiz) => <QuizCard key={quiz._id} quiz={quiz} role={user.role} />)}</ul>
     </div>
   );
 };

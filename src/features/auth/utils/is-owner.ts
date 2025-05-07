@@ -1,7 +1,7 @@
-// type Entity = {
-//   userName: string;
-// };
+type Entity = {
+  id: string;
+};
 
-// export const isOwner = async (userName: string, userName: string) => {
-//   return userName === entity.userName;
-// };
+export const isOwner = (id: string, entity: Entity) => {
+  return id === entity.id;
+};

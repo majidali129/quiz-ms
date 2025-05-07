@@ -5,32 +5,24 @@ import { FormItem } from "@/components/form/form-item";
 import SubmitButton from "@/components/form/submit-button";
 import { Empty_Action_State } from "@/components/form/utils/to-action-state";
 import { Button } from "@/components/ui/button";
-import { useUserRole } from "@/store/user-role-store";
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState } from "react";
+import { use, useActionState } from "react";
 import { loginUserAction, signInWithGoogle } from "../actions/sign-in";
 import google from "/public/images/google.png";
 
-export const SignInForm = () => {
-  const { role } = useUserRole();
+type SelectedRoleType = {
+  pendingRole: Promise<string | undefined>;
+};
+export const SignInForm = ({ pendingRole }: SelectedRoleType) => {
+  const role = use(pendingRole);
   const [formState, login] = useActionState(loginUserAction, Empty_Action_State);
-  // const isStudent = role === "student";
-  // console.log(role);
 
   return (
     <>
       <Form action={login} actionState={formState} onSuccess={() => "Login successfully"}>
         <div className="flex flex-col gap-4">
           <FormItem formState={formState} name="email" label="Email" type="email" placeholder="user@gmail.com" required={true} />
-          {/* <FormItem
-            formState={formState}
-            name={isStudent ? "registerationId" : "email"}
-            label={isStudent ? "Registeration Number" : "Email"}
-            type={!isStudent ? "email" : "text"}
-            placeholder={isStudent ? "Your university id" : "user@gmail.com"}
-            required={true}
-          /> */}
           <input type="hidden" name="role" value={role} />
           <FormItem formState={formState} name="password" isLogin={true} label="Password" type="password" required={true} placeholder="********" />
           <SubmitButton label="Sign In" />

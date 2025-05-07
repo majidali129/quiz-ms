@@ -1,9 +1,6 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, { Model, ObjectId, Schema } from "mongoose";
 
-export enum ROLE {
-  student = "student",
-  teacher = "teacher",
-}
+import { ROLE } from "@/types/index";
 
 interface IUserModel extends Document {
   userName: string;
@@ -15,6 +12,7 @@ interface IUserModel extends Document {
   picture?: string;
   provider?: string;
   providerId?: string;
+  coursesEnrolled?: [ObjectId];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -60,6 +58,7 @@ const userSchema: Schema<IUserModel> = new Schema(
     providerId: {
       type: String,
     },
+    coursesEnrolled: { type: [Schema.Types.ObjectId], ref: "Course", default: [] },
   },
   { timestamps: true }
 );

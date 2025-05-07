@@ -1,22 +1,22 @@
 import { Award, Calendar, Clock, MoreHorizontal, Play, Trophy, User } from "lucide-react";
 
-import { auth } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { isTeacher } from "@/features/utils/is-teacher";
+import { ROLE } from "@/types/index";
 import { format } from "date-fns";
 import { Quiz, QuizCompleteStatus, QuizDifficulty, QuizType } from "../types";
 import { QuizCardMoreMenu } from "./quiz-more-menu";
 
 interface QuizItemProps {
   quiz: Quiz;
+  role: ROLE;
 }
 
-export const QuizCard = async ({ quiz }: QuizItemProps) => {
-  const session = await auth();
-  const isTeacher = session?.user.role === "teacher";
-  const { title, description, course, quizType, isActive, createdAt, passingScore, createdBy, startDate, quizDuration, difficulty, completionStatus } = quiz;
+export const QuizCard = ({ quiz, role }: QuizItemProps) => {
+  const { title, description, course, quizType, createdAt, createdBy, difficulty, completionStatus } = quiz;
 
   const getDifficultyColor = (difficulty: QuizDifficulty) => {
     const colors = {
@@ -51,13 +51,14 @@ export const QuizCard = async ({ quiz }: QuizItemProps) => {
 
   const quizMoreMenu = (
     <QuizCardMoreMenu
-      quiz={quiz}
+      role={role}
       trigger={
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">Actions</span>
         </Button>
       }
+      quiz={quiz}
     />
   );
 
@@ -69,18 +70,18 @@ export const QuizCard = async ({ quiz }: QuizItemProps) => {
             <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-50 line-clamp-1">{title}</h3>
             <div className="flex flex-wrap gap-1.5 mt-1.5">
               <Badge variant="outline" className="font-normal">
-                {course}
+                {course.title}
               </Badge>
               <Badge className={`font-normal ${getQuizTypeColor(quizType)}`}>{quizType}</Badge>
               <Badge className={`font-normal ${getDifficultyColor(difficulty)}`}>{difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}</Badge>
-              {!isTeacher && completionStatus && (
+              {!isTeacher(role) && completionStatus && (
                 <Badge className={`font-normal ${getStatusColor(completionStatus)}`}>{completionStatus === "not-started" ? "Not Started" : completionStatus === "in-progress" ? "In Progress" : "Completed"}</Badge>
               )}
-              {isActive === false && (
+              {/* {isActive === false && (
                 <Badge variant="outline" className="font-normal text-zinc-500 dark:text-zinc-400">
                   Inactive
                 </Badge>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -94,19 +95,22 @@ export const QuizCard = async ({ quiz }: QuizItemProps) => {
         <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-sm mt-2">
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
-            <span>{quizDuration} min</span>
+            {/* <span>{duration} min</span> */}
+            <span>{32} min</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
-            <span>{format(startDate, "MM/dd/yyyy")}</span>
+            {/* <span>{format(startDate, "MM/dd/yyyy")}</span> */}
+            <span>{format(new Date(), "MM/dd/yyyy")}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Award className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
-            <span>Pass: {passingScore}%</span>
+            {/* <span>Pass: {passingScore}%</span> */}
+            <span>Pass: {43}%</span>
           </div>
           <div className="flex items-center gap-1.5">
             <User className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
-            <span className="truncate">{createdBy}</span>
+            <span className="truncate">{createdBy.userName}</span>
           </div>
         </div>
 
@@ -126,14 +130,14 @@ export const QuizCard = async ({ quiz }: QuizItemProps) => {
 
         <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center text-xs text-zinc-500 dark:text-zinc-400">
           <span>Created {format(createdAt, "MM/dd/yyyy")}</span>
-          {isTeacher && isActive !== false ? (
+          {/* {isTeacher && isActive !== false ? (
             <Badge variant="outline" className="font-normal text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20">
               Active
             </Badge>
-          ) : null}
+          ) : null} */}
         </div>
       </CardContent>
-      <CardFooter className="pt-2">
+      <CardFooter className="pt-2 ">
         {!isTeacher && (
           <div className="flex flex-wrap gap-2 w-full">
             {completionStatus === QuizCompleteStatus["not-started"] && (

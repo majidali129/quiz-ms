@@ -1,4 +1,6 @@
-import { signOut } from "@/features/auth/actions/sign-out";
+// import { signOut } from "@/features/auth/actions/sign-out";
+import { signOut } from "@/auth";
+import { chooseRolePath } from "@/paths/paths";
 import { LogOut, Settings, User } from "lucide-react";
 import { Session } from "next-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -37,7 +39,12 @@ const AccountDropdown = ({ session }: AcctountDropdownProps) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-red-600 dark:text-red-400">
           <LogOut className="mr-1 h-4 w-4" />
-          <form action={signOut}>
+          <form
+            action={async () => {
+              "use server";
+              await signOut({ redirectTo: chooseRolePath() });
+            }}
+          >
             <button type="submit" className="w-full text-left">
               Sign out
             </button>

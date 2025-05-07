@@ -27,7 +27,9 @@
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-switch": "^1.2.2",
     "@radix-ui/react-tabs": "^1.1.8",
-    "bcrypt": "^5.1.1",
+    "@tanstack/react-query": "^5.74.11",
+    "@tanstack/react-query-devtools": "^5.74.11",
+    "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
@@ -52,7 +54,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -64,5 +65,5 @@
     "tw-animate-css": "^1.2.5",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f"
+  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
 }

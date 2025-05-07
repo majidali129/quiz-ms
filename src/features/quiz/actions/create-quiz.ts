@@ -1,7 +1,8 @@
 "use server";
 
-import { auth } from "@/auth";
 import { ActionState, fromErrorToActionState, toActionState } from "@/components/form/utils/to-action-state";
+import { getAuthOrRedirect } from "@/features/auth/queries/get-auth-or-redirect";
+import { isTeacher } from "@/features/utils/is-teacher";
 import { connectDB } from "@/lib/connect-db";
 import { Quiz } from "@/models/quiz-model";
 import { quizzesPath } from "@/paths/paths";
@@ -14,31 +15,48 @@ const questionSchema = z.object({
   correctOption: z.number().default(0),
 });
 
+const quizSettingsSchema = z.object({
+  duration: z.coerce.number().min(1, "Duration must be at least 1 minute"),
+  maxAttempts: z.coerce.number().min(1, "Max attempts must be at least 1"),
+  passingScore: z.coerce.number().min(1, "Passing score must be at least 1"),
+  showAnswers: z.boolean().default(false).optional(),
+});
+
+const quizScheduleSchema = z.object({
+  startDate: z.string(),
+  endDate: z.string(),
+  startTime: z.string(),
+});
+
 const createQuizSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   description: z.string().optional(),
   course: z.string().min(1, "Please select a course"),
   quizType: z.enum(["Objective", "Subjective"], { message: "Quiz type can be either subjective or objective" }),
-  quizDuration: z.coerce.number().min(1, "Duration must be at least 1 minute"),
-  maxAttempts: z.coerce.number().min(1, "Max attempts must be at least 1"),
-  passingScore: z.coerce.number().min(1, "Passing score must be at least 1"),
   difficulty: z.enum(["easy", "medium", "hard"], { message: "Difficulty can be either easy, medium or hard" }),
   questions: z.array(questionSchema).min(1, "At least one question is required"),
-  startDate: z.string(),
-  startTime: z.string(),
+  settings: quizSettingsSchema,
+  schedule: quizScheduleSchema,
 });
 export const createQuize = async (_initialState: ActionState, formData: FormData) => {
   await connectDB();
   try {
-    const session = await auth();
+    const session = await getAuthOrRedirect();
+    console.log(isTeacher(session.user.role));
+    if (!isTeacher(session.user.role)) {
+      return toActionState("ERROR", "Only teachers can create quizzes", formData);
+    }
+
     const rawData = Object.fromEntries(formData);
-    if (typeof rawData.questions !== "string") {
+    console.log(rawData);
+    const { questions, duration, maxAttempts, passingScore, showAnswers, startDate, endDate, startTime, isActive } = rawData;
+    if (typeof questions !== "string") {
       return toActionState("ERROR", "Questions data must be a JSON string");
     }
 
     let parsedQuestions;
     try {
-      parsedQuestions = JSON.parse(rawData.questions);
+      parsedQuestions = JSON.parse(questions);
     } catch (e) {
       console.log("error", e);
       return toActionState("ERROR", "Invalid JSON format for questions");
@@ -46,9 +64,22 @@ export const createQuize = async (_initialState: ActionState, formData: FormData
     const quizDataForValidation = {
       ...rawData,
       questions: parsedQuestions,
+      settings: {
+        duration,
+        maxAttempts,
+        passingScore,
+        showAnswers,
+      },
+      schedule: {
+        startDate,
+        endDate,
+        startTime,
+        isActive,
+      },
     };
     const validatedData = await createQuizSchema.parseAsync(quizDataForValidation);
-    await Quiz.create({ ...validatedData, createdBy: session?.user.userName });
+    console.log("validatedData", validatedData);
+    await Quiz.create({ ...validatedData, createdBy: session.user.id });
   } catch (error) {
     console.log(error);
     if (error instanceof ZodError) {

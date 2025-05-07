@@ -5,9 +5,9 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { cloneElement, ReactElement, useState } from "react";
 
 type DialogShellProps = {
-  children: ReactElement<{ onClose: () => void }>;
+  children: ReactElement<{ onClose?: () => void }>;
   triggerText: string;
-  title: string;
+  title?: string;
   description: string;
 };
 
@@ -19,10 +19,10 @@ export const DialogShell = ({ children, triggerText, title, description }: Dialo
       <DialogTrigger asChild>
         <Button>{triggerText}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:!max-w-3xl gap-5 overflow-y-auto max-h-[calc(100vh-60px)] hide-scroll">
+      <DialogContent className="sm:!max-w-[42rem] gap-5 overflow-y-auto max-h-[calc(100vh-60px)] hide-scroll">
         <div>
-          <DialogTitle className="text-3xl  font-bold text-foreground">{title}</DialogTitle>
-          <p className="text-muted-foreground px-2 text-sm">{description}</p>
+          <DialogTitle className="text-2xl  font-bold text-foreground">{title}</DialogTitle>
+          <p className="text-muted-foreground px-1 text-sm">{description}</p>
         </div>
         {cloneElement(children, { onClose: () => setOpen(false) })}
       </DialogContent>

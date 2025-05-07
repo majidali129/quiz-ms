@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { User } from "@/models/user-model";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Types } from "mongoose";
 import { redirect } from "next/navigation";
 import { z } from "zod";

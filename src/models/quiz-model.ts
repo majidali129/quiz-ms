@@ -1,5 +1,5 @@
-import { QuizCompleteStatus, QuizDifficulty } from "@/features/quiz/types";
-import mongoose, { Document, Model, Schema } from "mongoose";
+import { IQuizSchedule, IQuizSettings, QuizCompleteStatus, QuizDifficulty } from "@/features/quiz/types";
+import mongoose, { Document, Model, ObjectId, Schema, Types } from "mongoose";
 
 interface IQuestion {
   questionText: string;
@@ -12,33 +12,18 @@ const enum QuizType {
   Subjective = "Subjective",
 }
 
-// interface IQuizConstraints {
-//   duration: number;
-//   maxAttempts: number;
-//   passingScore: number;
-//   isActive: boolean;
-//   shuffleQuestions?: boolean;
-//   shuffleOptions?: boolean;
-//   startDate: Date;
-//   startTime: string;
-// }
-
 export interface IQuiz extends Document {
   title: string;
   description?: string;
-  course?: string;
+  course: ObjectId;
   quizType: QuizType;
-  createdBy: string; // it'll be teacher userName
+  createdBy: ObjectId;
+  difficulty: QuizDifficulty;
   questions: Array<IQuestion>;
-  startDate: string;
-  startTime: string;
-  quizDuration: number;
-  maxAttempts: number;
-  passingScore: number;
+  settings: IQuizSettings;
+  schedule: IQuizSchedule;
   quizSession?: string;
   completionStatus?: QuizCompleteStatus;
-  isActive?: boolean;
-  difficulty: QuizDifficulty;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -63,48 +48,52 @@ const questionSchema = new Schema<IQuestion>({
   },
 });
 
-// const constraintsSchema = new Schema<IQuizConstraints>({
-//   duration: {
-//     type: Number,
-//     required: true,
-//     min: [1, "Minimum duration is 1 minute"],
-//     max: [180, "Maximum duration is 180 minutes"],
-//     default: 30,
-//   },
-//   maxAttempts: {
-//     type: Number,
-//     required: true,
-//     min: [1, "At least 1 attempt must be allowed"],
-//     max: [10, "Maximum attempts allowed are 10"],
-//     default: 3,
-//   },
-//   passingScore: {
-//     type: Number,
-//     required: true,
-//     min: [1, "Passing score must be at least 1%"],
-//     max: [100, "Passing score cannot exceed 100%"],
-//     default: 50,
-//   },
-//   isActive: {
-//     type: Boolean,
-//     required: true,
-//     default: true,
-//   },
-//   shuffleQuestions: {
-//     type: Boolean,
-//   },
-//   shuffleOptions: {
-//     type: Boolean,
-//   },
-//   startDate: {
-//     type: Date,
-//     required: [true, "Quiz start date is required"],
-//   },
-//   startTime: {
-//     type: String,
-//     required: [true, "Quiz start time is required"],
-//   },
-// });
+const quizSettingsSchema = new Schema<IQuizSettings>({
+  duration: {
+    type: Number,
+    required: true,
+    min: [1, "Minimum duration is 1 minute"],
+    max: [180, "Maximum duration is 180 minutes"],
+    default: 30,
+  },
+  maxAttempts: {
+    type: Number,
+    required: true,
+    min: [1, "At least 1 attempt must be allowed"],
+    max: [10, "Maximum attempts allowed are 10"],
+    default: 3,
+  },
+  passingScore: {
+    type: Number,
+    required: true,
+    min: [1, "Passing score must be at least 1%"],
+    max: [100, "Passing score cannot exceed 100%"],
+    default: 50,
+  },
+  showAnswers: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+const quizSchedultSchema = new Schema<IQuizSchedule>({
+  startDate: {
+    type: String,
+    required: [true, "Quiz start date is required"],
+  },
+  endDate: {
+    type: String,
+    required: [true, "Quiz end date is required"],
+  },
+  startTime: {
+    type: String,
+    required: [true, "Quiz start time is required"],
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const quizSchema: Schema<IQuiz> = new Schema(
   {
@@ -119,67 +108,47 @@ const quizSchema: Schema<IQuiz> = new Schema(
       type: String,
       trim: true,
     },
+
+    course: {
+      type: Types.ObjectId,
+      ref: "Course",
+      required: [true, "Course is required"],
+      index: true,
+    },
     quizType: {
       type: String,
       required: [true, "Quiz type is required"],
       default: QuizType.Objective,
     },
-    course: {
-      // type: Types.ObjectId,
-      // ref: "Course",
-      type: String,
-      required: true,
-    },
     createdBy: {
-      type: String,
+      type: Types.ObjectId,
+      ref: "User",
       required: [true, "Quiz author is required"],
+      index: true,
+    },
+    difficulty: {
+      type: String,
+      enum: ["easy", "medium", "hard"],
+      message: "Invalid difficulty value. ",
+      default: QuizDifficulty["easy"],
+      index: true,
     },
     questions: {
       type: [questionSchema],
       required: [true, "At least one question is required for quiz"],
     },
-    startDate: {
-      type: String,
-      required: [true, "Quiz start date is required"],
-    },
-    startTime: {
-      type: String,
-      required: [true, "Quiz start time is required"],
-    },
-    quizDuration: {
-      type: Number,
-      required: [true, "Duration is required"],
-      min: [1, "Minimum duration is 1 minute"],
-      max: [180, "Maximum duration is 180 minutes"],
-    },
-    maxAttempts: {
-      type: Number,
-      required: [true, "Max attempts are required"],
-      min: [1, "At least 1 attempt is required"],
-      max: [10, "Maximum 10 attempts are allowed"], // optional
-    },
-    passingScore: {
-      type: Number,
-      required: [true, "Passing score is required"],
-      min: [1, "Minimum passing score must be 1%"],
-      max: [100, "Maximum passing score must be 100%"], // optional
-    },
+    settings: quizSettingsSchema,
+    schedule: quizSchedultSchema,
     quizSession: {
       type: String,
     },
-    difficulty: {
-      type: String,
-      required: true,
-    },
+
     completionStatus: {
       type: String,
-      // default: QuizCompleteStatus["not-started"],
       enum: ["not-started", "in-progress", "completed"],
       message: "Invalid completion status value. ",
-    },
-    isActive: {
-      type: Boolean,
-      default: false,
+      default: QuizCompleteStatus["not-started"],
+      index: true,
     },
   },
   { timestamps: true }

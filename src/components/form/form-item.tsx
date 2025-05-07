@@ -16,11 +16,12 @@ type FormItemProps = {
   className?: string;
   min?: string;
   max?: string;
+  rows?: number;
   isLogin?: boolean;
   formState: ActionState;
 };
 
-const FormItem = ({ label, name, placeholder, min, max, required, type, textArea = false, className, isLogin = false, formState }: FormItemProps) => {
+const FormItem = ({ label, name, placeholder, min, max, rows, required, type = "text", textArea = false, className, isLogin = false, formState }: FormItemProps) => {
   const renderLabel =
     type === "password" ? (
       <div className="flex items-center">
@@ -38,7 +39,7 @@ const FormItem = ({ label, name, placeholder, min, max, required, type, textArea
     <div className={cn("grid gap-1.5", className)}>
       {renderLabel}
       {textArea ? (
-        <Textarea name={name} required={required} defaultValue={formState?.payload?.get(name) as string} placeholder={placeholder} />
+        <Textarea name={name} required={required} rows={rows} defaultValue={formState?.payload?.get(name) as string} placeholder={placeholder} />
       ) : (
         <Input autoComplete="off" min={min} max={max} id={name} name={name} type={type} placeholder={placeholder} required={required} defaultValue={formState?.payload?.get(name) as string} />
       )}

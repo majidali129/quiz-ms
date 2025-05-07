@@ -2,9 +2,10 @@
 
 import { useConfirmDialog } from "@/components/confirm-dailog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { isTeacher } from "@/features/utils/is-teacher";
 import { quizPath } from "@/paths/paths";
+import { ROLE } from "@/types/index";
 import { Edit, Eye, Play, Trash2 } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { deleteQuiz } from "../actions/delete-quiz";
@@ -13,10 +14,10 @@ import { Quiz } from "../types";
 type QuizMoreMenuProps = {
   quiz: Quiz;
   trigger: ReactNode;
+  role: ROLE;
 };
 
-export const QuizCardMoreMenu = ({ quiz, trigger }: QuizMoreMenuProps) => {
-  const { data: session } = useSession();
+export const QuizCardMoreMenu = ({ quiz, trigger, role }: QuizMoreMenuProps) => {
   const [deleteButton, dialog] = useConfirmDialog({
     action: deleteQuiz.bind(null, quiz._id),
     trigger: (
@@ -26,7 +27,6 @@ export const QuizCardMoreMenu = ({ quiz, trigger }: QuizMoreMenuProps) => {
       </DropdownMenuItem>
     ),
   });
-  const isTeacher = session?.user.role;
 
   const editButton = (
     <DropdownMenuItem>
@@ -63,7 +63,7 @@ export const QuizCardMoreMenu = ({ quiz, trigger }: QuizMoreMenuProps) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
         <DropdownMenuContent align="end" side="right">
-          {isTeacher ? (
+          {isTeacher(role) ? (
             <>
               {editButton}
               {viewDetailsButton}
@@ -73,7 +73,7 @@ export const QuizCardMoreMenu = ({ quiz, trigger }: QuizMoreMenuProps) => {
             </>
           ) : (
             <>
-              {quiz.completionStatus === "completed" ? { resultsButton } : { pauseResumeButton }}
+              {quiz.completionStatus === "completed" ? resultsButton : pauseResumeButton}
               {viewDetailsButton}
             </>
           )}

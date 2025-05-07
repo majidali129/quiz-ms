@@ -1,12 +1,12 @@
 import { format } from "date-fns";
 import { ArrowLeft, Award, BarChart3, Calendar, CheckCircle, Clock, Edit, Eye, FileQuestion, Play, Repeat, Trash2, User } from "lucide-react";
 
-import { auth } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { getAuth } from "@/features/auth/queries/get-auth";
 import { quizzesPath } from "@/paths/paths";
 import { ROLE } from "@/types/index";
 import Link from "next/link";
@@ -45,8 +45,9 @@ type QuizDetailsProps = {
   quiz: Quiz;
 };
 export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
-  const session = await auth();
-  const isTeacher = session?.user.role === ROLE.teacher;
+  const user = await getAuth();
+  const isTeacher = user.role === ROLE.teacher;
+  console.log(quiz);
 
   const getDifficultyColor = (difficulty: QuizDifficulty) => {
     const colors = {
@@ -120,7 +121,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
           <h1 className="text-3xl font-bold text-foreground">{quiz.title}</h1>
           <div className="flex flex-wrap items-center gap-2 mt-2">
             <Badge variant="outline" className="font-normal">
-              {quiz.course}
+              {quiz.course.title}
             </Badge>
             <Badge className={`font-normal ${getQuizTypeColor(quiz.quizType)}`}>{quiz.quizType}</Badge>
             <Badge className={`font-normal ${getDifficultyColor(quiz.difficulty)}`}>{quiz.difficulty.charAt(0).toUpperCase() + quiz.difficulty.slice(1)}</Badge>
@@ -137,19 +138,6 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
               {editButton}
               {resultsButton}
               {deleteButton}
-              {/* <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <AlertDialogTrigger asChild></AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>This action cannot be undone. This will permanently delete the quiz and all associated data.</AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog> */}
             </>
           ) : (
             <>
@@ -228,7 +216,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
               <CardContent>
                 <div className="space-y-4">
                   <p className="text-zinc-700 dark:text-zinc-300">
-                    This quiz contains {quiz.questions.length} questions and must be completed within {quiz.quizDuration} minutes. You need to score at least {quiz.passingScore}% to pass.
+                    This quiz contains {quiz.questions.length} questions and must be completed within {quiz.settings?.duration} minutes. You need to score at least {quiz.settings?.passingScore}% to pass.
                   </p>
 
                   {quiz.completionStatus === "in-progress" && (
@@ -344,7 +332,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
                 <div>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Start Date</p>
                   <p className="font-medium">
-                    {formatDate(quiz.startDate)} at {quiz.startTime}
+                    {formatDate(quiz.schedule?.startDate)} at {quiz.schedule?.startTime}
                   </p>
                 </div>
               </div>
@@ -353,7 +341,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
                 <Clock className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
                 <div>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Duration</p>
-                  <p className="font-medium">{quiz.quizDuration} minutes</p>
+                  <p className="font-medium">{quiz.settings?.duration} minutes</p>
                 </div>
               </div>
 
@@ -369,7 +357,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
                 <Repeat className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
                 <div>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Attempts Allowed</p>
-                  <p className="font-medium">{quiz.maxAttempts} attempts</p>
+                  <p className="font-medium">{quiz.settings.maxAttempts} attempts</p>
                 </div>
               </div>
 
@@ -377,7 +365,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
                 <Award className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
                 <div>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Passing Score</p>
-                  <p className="font-medium">{quiz.passingScore}%</p>
+                  <p className="font-medium">{quiz.settings.passingScore}%</p>
                 </div>
               </div>
 
@@ -387,7 +375,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
                 <User className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
                 <div>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">Created By</p>
-                  <p className="font-medium">{quiz.createdBy}</p>
+                  <p className="font-medium">{quiz.createdBy.userName}</p>
                 </div>
               </div>
 
@@ -407,7 +395,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
                   <div>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400">Your Attempts</p>
                     <p className="font-medium">
-                      {studentAttempts.length} of {quiz.maxAttempts} used
+                      {studentAttempts.length} of {quiz.settings.maxAttempts} used
                     </p>
                   </div>
                 </>

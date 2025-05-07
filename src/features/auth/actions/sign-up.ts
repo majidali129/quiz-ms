@@ -4,7 +4,7 @@ import { ActionState, fromErrorToActionState, toActionState } from "@/components
 import { connectDB } from "@/lib/connect-db";
 import { User } from "@/models/user-model";
 import { signInPath } from "@/paths/paths";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 

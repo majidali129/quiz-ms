@@ -3,17 +3,6 @@ export const enum QuizType {
   Subjective = "Subjective",
 }
 
-export type IQuizConstraints = {
-  duration: number;
-  maxAttempts: number;
-  passingScore: number;
-  isActive?: boolean;
-  shuffleQuestions?: boolean;
-  shuffleOptions?: boolean;
-  startDate: Date;
-  startTime: string;
-};
-
 export const enum QuizDifficulty {
   easy = "easy",
   medium = "medium",
@@ -25,6 +14,19 @@ export const enum QuizCompleteStatus {
   "in-progress" = "in-progress",
   completed = "completed",
 }
+export interface IQuizSettings {
+  duration: number;
+  maxAttempts: number;
+  passingScore: number;
+  showAnswers: boolean;
+}
+
+export interface IQuizSchedule {
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  isActive?: boolean;
+}
 
 export type Question = {
   questionText: string;
@@ -35,19 +37,15 @@ export type Question = {
 export type Quiz = {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
+  course: { _id: string; title: string };
   quizType: QuizType;
-  course: string;
-  createdBy: string;
+  createdBy: { _id: string; userName: string; picture: string };
   questions: Question[];
-  startDate: string;
-  startTime: string;
-  quizDuration: number;
-  maxAttempts: number;
-  passingScore: number;
-  completionStatus?: QuizCompleteStatus;
-  isActive?: boolean;
+  settings: IQuizSettings;
+  schedule: IQuizSchedule;
   quizSession?: string;
+  completionStatus?: QuizCompleteStatus;
   difficulty: QuizDifficulty;
   createdAt: Date;
   updatedAt: Date;
