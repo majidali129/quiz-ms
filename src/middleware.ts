@@ -50,5 +50,6 @@ export const config = {
     "/node_modules/lodash.mapkeys/index.js",
     "/node_modules/lodash.omit/index.js",
     "/node_modules/lodash.get/index.js",
+    "./lib/connect-db.ts",
   ],
 };

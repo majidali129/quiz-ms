@@ -2,9 +2,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAuth } from "@/features/auth/queries/get-auth";
+import { getEnrollments } from "@/features/queries/get-enrollments";
+import { getStudentEnrollments } from "@/features/queries/get-student-enrollments";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, MoreVertical, UserMinus, UserPlus, Users } from "lucide-react";
+import { EnrollmentStatus } from "../course-enrollments/types";
 import { Course } from "../types";
 import { isCourseOwner } from "../utils/is-course-owner";
 import { CourseCardMoreMenu } from "./course-more-menu";
@@ -15,6 +18,7 @@ interface CourseCardProps {
 
 const CourseCard = async ({ course }: CourseCardProps) => {
   const user = await getAuth();
+  const studentEnrollmentsPromise = getEnrollments(undefined, undefined, EnrollmentStatus.active);
   const userRole = user.role;
   const userId = user.id;
 
@@ -27,6 +31,7 @@ const CourseCard = async ({ course }: CourseCardProps) => {
   const courseMoreMenu = (
     <CourseCardMoreMenu
       course={course}
+      studentEnrollmentsPromise={studentEnrollmentsPromise}
       trigger={
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreVertical className="h-4 w-4" />

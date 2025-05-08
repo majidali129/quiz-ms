@@ -1,35 +1,41 @@
 import mongoose, { Document, Model, ObjectId, Schema, Types } from "mongoose";
 
 interface ICourseEnrollment extends Document {
-  course: ObjectId;
-  student: ObjectId; // this can be either any student/user or course creator itself ( as a student )
-  enrollmentDate: Date;
+  courseId: ObjectId;
+  studentId: ObjectId;
+  enrolledAt: string;
   enrollmentStatus: "active" | "completed" | "dropped";
+  unEnrolledAt?: string;
   updatedAt: Date;
   createdAt: Date;
 }
 
 const courseEnrollmentSchema: Schema<ICourseEnrollment> = new Schema(
   {
-    course: {
+    courseId: {
       type: Types.ObjectId,
       ref: "Course",
       required: true,
+      index: true,
     },
-    student: {
+    studentId: {
       type: Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
-    enrollmentDate: {
-      type: Date,
+    enrolledAt: {
+      type: String,
       required: true,
-      default: Date.now(),
     },
     enrollmentStatus: {
       type: String,
       enum: ["active", "completed", "dropped"],
       default: "active",
+      index: true,
+    },
+    unEnrolledAt: {
+      type: String,
     },
   },
   { timestamps: true }

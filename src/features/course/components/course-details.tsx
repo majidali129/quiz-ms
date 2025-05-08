@@ -6,11 +6,13 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getAuth } from "@/features/auth/queries/get-auth";
+import { getEnrollments } from "@/features/queries/get-enrollments";
 import { isStudent } from "@/features/utils/is-student";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { coursesPath } from "@/paths/paths";
 import { format } from "date-fns";
 import Link from "next/link";
+import { CourseEnrollment, EnrollmentStatus } from "../course-enrollments/types";
 import { Course, CourseLevel } from "../types";
 import { isCourseOwner } from "../utils/is-course-owner";
 
@@ -30,19 +32,22 @@ function getLevelColor(level: CourseLevel): string {
 
 type CourseDetailsProps = {
   course: Course;
+  enrollments: CourseEnrollment[];
 };
 
-export const CourseDetails = async ({ course }: CourseDetailsProps) => {
+export const CourseDetails = async ({ course, enrollments }: CourseDetailsProps) => {
   const user = await getAuth();
-  const isEnrolled = course.students.includes(user.id);
+  const courseEnrollments = await getEnrollments(course._id, undefined, EnrollmentStatus.dropped);
+  const isEnrolled = enrollments?.some((enrollment) => enrollment.studentId.toString() === user.id);
+
   return (
-    <div className="w-full p-6 space-y-5">
+    <div className="w-full px-6 space-y-5 ">
       <Link href={coursesPath()} className={buttonVariants({ variant: "ghost" })}>
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back to courses
       </Link>
 
-      <div className="grid gap-8">
+      <div className="grid gap-6">
         {/* Course Details Card */}
         <Card className="overflow-hidden">
           <CardHeader className=" border-b">
@@ -217,26 +222,19 @@ export const CourseDetails = async ({ course }: CourseDetailsProps) => {
             )}
           </div>
         ) : (
-          <Card className="p-8 text-center">
-            <div className="flex flex-col items-center gap-2">
-              <BookOpen className="h-12 w-12 text-gray-300" />
-              <h3 className="text-lg font-medium">Not Enrolled yet</h3>
-              <p className="text-muted-foreground max-w-md mx-auto">Enroll yourself to get most of it.</p>
-              <Button className="mt-4">Let&apos;s Enroll</Button>
-            </div>
-          </Card>
+          <>
+            {!isEnrolled ? (
+              <Card className="p-8 text-center">
+                <div className="flex flex-col items-center gap-2">
+                  <BookOpen className="h-12 w-12 text-gray-300" />
+                  <h3 className="text-lg font-medium">Not Enrolled yet</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">Enroll yourself to get most of it.</p>
+                  <Button className="mt-4">Let&apos;s Enroll</Button>
+                </div>
+              </Card>
+            ) : null}
+          </>
         )}
-
-        {/* {!isEnrolled && (
-          <Card className="p-8 text-center">
-            <div className="flex flex-col items-center gap-2">
-              <Users className="h-12 w-12 text-gray-300" />
-              <h3 className="text-lg font-medium">Not Enrolled yet</h3>
-              <p className="text-muted-foreground max-w-md mx-auto">Enroll yourself to get most of it.</p>
-              <Button className="mt-4">Let&apos;s Enroll</Button>
-            </div>
-          </Card>
-        )} */}
       </div>
     </div>
   );
