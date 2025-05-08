@@ -52,7 +52,7 @@ export const config = {
     "/node_modules/lodash.mapkeys/index.js",
     "/node_modules/lodash.omit/index.js",
     "/node_modules/lodash.get/index.js",
-    "./src/lib/connect-db.ts",
+    "./lib/connect-db.ts",
     "./node_modules/mongoose/dist/browser.umd.js",
   ],
 };
