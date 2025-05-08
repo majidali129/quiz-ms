@@ -3,6 +3,8 @@ import { auth } from "./auth";
 import { chooseRolePath } from "./paths/paths";
 import { authRoutes } from "./routes";
 
+import { connectDB } from "./lib/connect-db";
+
 export default auth((req) => {
   const { nextUrl } = req;
   const url = nextUrl.pathname;
@@ -51,5 +53,6 @@ export const config = {
     "/node_modules/lodash.omit/index.js",
     "/node_modules/lodash.get/index.js",
     "./src/lib/connect-db.ts",
+    "./node_modules/mongoose/dist/browser.umd.js",
   ],
 };
