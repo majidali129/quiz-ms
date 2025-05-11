@@ -21,7 +21,7 @@ interface CreateCourseFormProps {
 }
 
 export default function CreateCourseForm({ onClose, course }: CreateCourseFormProps) {
-  const [formState, formAction] = useActionState(createCourse, Empty_Action_State);
+  const [formState, formAction] = useActionState(createCourse.bind(null, course?._id), Empty_Action_State);
   const [requireApproval, setRequireApproval] = useState(true);
 
   const handleRequireApproval = () => {
