@@ -6,6 +6,7 @@ import { connectDB } from "@/lib/connect-db";
 import { Course } from "@/models/course-model";
 import { coursesPath } from "@/paths/paths";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export const deleteCourse = async (id: string) => {
   await connectDB();
@@ -28,5 +29,5 @@ export const deleteCourse = async (id: string) => {
   }
 
   revalidatePath(coursesPath());
-  return toActionState("SUCCESS", "Course deleted successfully");
+  redirect(coursesPath());
 };
