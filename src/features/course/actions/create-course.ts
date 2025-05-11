@@ -1,5 +1,6 @@
 "use server";
 
+import { setCookieByKey } from "@/actions/cookies";
 import { ActionState, fromErrorToActionState, toActionState } from "@/components/form/utils/to-action-state";
 import { getAuth } from "@/features/auth/queries/get-auth";
 import { connectDB } from "@/lib/connect-db";
@@ -9,7 +10,7 @@ import { createCourseSchema } from "@/schemas/course-schema";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 
-export const createCourse = async (_initialState: ActionState, formData: FormData) => {
+export const createCourse = async (courseId: string | undefined, _initialState: ActionState, formData: FormData) => {
   await connectDB();
 
   try {
@@ -25,9 +26,16 @@ export const createCourse = async (_initialState: ActionState, formData: FormDat
       return toActionState("ERROR", "Course code is already in use. Please use different one.");
     }
 
-    const course = await Course.create({ ...validatedData, createdBy: user.id });
-    if (!course) {
-      return toActionState("ERROR", "Error while creating course. Try again later.");
+    if (courseId) {
+      const updatedCourse = await Course.findOneAndUpdate({ _id: courseId, createdBy: user.id }, validatedData);
+      if (!updatedCourse) {
+        return toActionState("ERROR", "Course not found or not authorized to update", formData);
+      }
+    } else {
+      const newCourse = await Course.create({ ...validatedData, createdBy: user.id });
+      if (!newCourse) {
+        return toActionState("ERROR", "Error while creating course. Try again later.");
+      }
     }
   } catch (error) {
     console.log("Create course error::", error);
@@ -37,5 +45,9 @@ export const createCourse = async (_initialState: ActionState, formData: FormDat
   }
 
   revalidatePath(coursesPath());
-  return toActionState("SUCCESS", "Course created successfully");
+  if (courseId) {
+    await setCookieByKey("toast", "Course updated successfully");
+    revalidatePath(coursesPath());
+  }
+  return toActionState("SUCCESS", courseId ? "Course updated successfully" : "Course created successfully");
 };
