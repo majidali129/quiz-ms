@@ -1,11 +1,13 @@
-import { ArrowLeft, BookOpen, Calendar, CheckCircle2, Clock, DollarSign, GraduationCap, Users, XCircle } from "lucide-react";
+import { ArrowLeft, BookOpen, Calendar, CheckCircle2, Clock, DollarSign, Edit, GraduationCap, Users, XCircle } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getAuth } from "@/features/auth/queries/get-auth";
+import { DialogShell } from "@/features/quiz/components/dialog-shell";
 import { isStudent } from "@/features/utils/is-student";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { coursesPath } from "@/paths/paths";
@@ -14,6 +16,8 @@ import Link from "next/link";
 import { CourseEnrollment, EnrollmentStatus } from "../course-enrollments/types";
 import { Course, CourseLevel } from "../types";
 import { isCourseOwner } from "../utils/is-course-owner";
+import CreateCourseForm from "./course-create-form";
+import { CourseDeleteButton } from "./course-delete-button";
 import { CourseEnrollmentButton } from "./course-enrollment-button";
 
 // Helper function to get level badge color
@@ -39,10 +43,24 @@ export const CourseDetails = async ({ course, courseEnrollments }: CourseDetails
   const user = await getAuth();
   const isEnrolled = courseEnrollments?.some((enrollment) => enrollment.course === course._id && enrollment.enrollmentStatus === EnrollmentStatus.active && enrollment.student._id === user.id);
   const activeEnrollments = courseEnrollments.filter((enrollment) => enrollment.enrollmentStatus === EnrollmentStatus.active);
-  console.log(course.createdBy._id, user.id);
-  console.log("isEnrolled", isEnrolled);
-  console.log(courseEnrollments);
-  console.log("activeEnrollments", activeEnrollments);
+
+  const editButton = (
+    <DialogShell
+      title="Update course"
+      description="Update course details"
+      triggerText="Edit"
+      trigger={
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="gap-1">
+            <Edit className="h-4 w-4" />
+            <span className="hidden sm:inline">Edit</span>
+          </Button>
+        </DialogTrigger>
+      }
+    >
+      <CreateCourseForm />
+    </DialogShell>
+  );
 
   return (
     <div className="w-full px-6 space-y-5 ">
@@ -66,6 +84,12 @@ export const CourseDetails = async ({ course, courseEnrollments }: CourseDetails
                 {isStudent(user.role) && (
                   <>
                     <CourseEnrollmentButton isEnrolled={isEnrolled} courseId={course._id} variant="ghost" />
+                  </>
+                )}
+                {isTeacher(user.role) && (
+                  <>
+                    {editButton}
+                    <CourseDeleteButton courseId={course._id} />
                   </>
                 )}
                 <Badge variant="outline" className={`${getLevelColor(course.level)} text-xs md:text-sm px-3 py-1 font-medium`}>

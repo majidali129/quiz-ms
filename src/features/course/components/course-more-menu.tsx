@@ -82,7 +82,7 @@ export const CourseCardMoreMenu = ({ course, trigger, isEnrolled }: QuizMoreMenu
         <DropdownMenuContent align="end" side="right">
           {isOwner && isTeacher(session?.user.role) ? (
             <>
-              {editButton}
+              {/* {editButton} */}
               {viewDetailsButton}
               <DropdownMenuSeparator />
               {deleteButton}
