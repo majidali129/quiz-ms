@@ -3,6 +3,7 @@ import RedirectToast from "@/components/redirect-toast";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { UserRoleStoreProvider } from "@/providers/user-role-store-provider";
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -32,7 +33,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden`}>
         <ThemeProvider>
           <UserRoleStoreProvider>
-            <AuthProtector>{children}</AuthProtector>
+            <SessionProvider>
+              <AuthProtector>{children}</AuthProtector>
+            </SessionProvider>
           </UserRoleStoreProvider>
           <Toaster expand />
           <RedirectToast />
