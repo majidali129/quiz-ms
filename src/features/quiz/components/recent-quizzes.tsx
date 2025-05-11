@@ -55,7 +55,8 @@ function RecentQuizItem({ quiz }: RecentQuizItemProps) {
             <ArrowUpRight />
           </Link>
         </div>
-        <div className="rounded-sm !bg-card w-7 flex items-center justify-center h-7 p-1 hover:scale-105">
+        {/* <div className="rounded-sm !bg-card w-7 flex items-center justify-center h-7 p-1 hover:scale-105 hidden"> */}
+        <div className="rounded-sm !bg-card w-7  items-center justify-center h-7 p-1 hover:scale-105 hidden">
           <Trash2 className="text-destructive/90 hover:text-destructive" />
         </div>
       </div>

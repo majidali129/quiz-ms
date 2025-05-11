@@ -46,7 +46,7 @@ function UpcomingQuizeItem({ quiz }: UpcomingQuizItemProps) {
           <span>{quiz.settings.duration} minutes</span>
         </p>
       </div>
-      <Button asChild size="sm" className="text-[.84rem]">
+      <Button asChild size="sm" className="text-[.84rem] hidden">
         <Link href={quizPath(quiz._id)} className={buttonVariants({ variant: "default" })}>
           Start Quiz
         </Link>
