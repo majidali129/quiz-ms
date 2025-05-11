@@ -4,14 +4,12 @@ import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const publicRoutes = ["/", "/about", "/contact-us", "/sign-in", "/sign-up", "/choose-role", "/faqs", "/new-password"];
+const authRoutes = ["/sign-in", "/sign-up", "/choose-role"];
 
 export const AuthProtector = ({ children }: { children: React.ReactNode }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-
-  const isPublicRoute = publicRoutes.includes(pathname);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -19,7 +17,7 @@ export const AuthProtector = ({ children }: { children: React.ReactNode }) => {
     const isLoggedIn = !!session;
 
     // Not logged in & trying to access protected route
-    if (!isLoggedIn && !isPublicRoute) {
+    if (!isLoggedIn && !authRoutes.includes(pathname)) {
       router.replace("/choose-role");
     }
 
@@ -27,7 +25,7 @@ export const AuthProtector = ({ children }: { children: React.ReactNode }) => {
     if (isLoggedIn && ["/sign-in", "/sign-up", "/choose-role"].includes(pathname)) {
       router.replace("/dashboard");
     }
-  }, [session, status, pathname, router, isPublicRoute]);
+  }, [session, status, pathname, router]);
 
   // Optionally render nothing while redirecting
   if (status === "loading") return null;
