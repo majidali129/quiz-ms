@@ -4,7 +4,6 @@ import { getAuth } from "@/features/auth/queries/get-auth";
 import { DialogShell } from "@/features/quiz/components/dialog-shell";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { cn } from "@/lib/utils";
-import { ROLE } from "@/types/index";
 import { getCourses } from "../../queries/get-courses";
 import { CourseCard } from "./course-card";
 import CreateCourseForm from "./course-create-form";
