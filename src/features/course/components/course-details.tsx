@@ -58,7 +58,7 @@ export const CourseDetails = async ({ course, courseEnrollments }: CourseDetails
         </DialogTrigger>
       }
     >
-      <CreateCourseForm />
+      <CreateCourseForm course={course} />
     </DialogShell>
   );
 
