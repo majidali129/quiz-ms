@@ -14,7 +14,7 @@ type CourseListProps = {
 };
 export const CourseList = async ({ className }: CourseListProps) => {
   const user = await getAuth();
-  const courses = await getCourses(user.role === ROLE.teacher ? user.id : undefined);
+  const courses = await getCourses(isTeacher(user.role) ? user.id : undefined);
   return (
     <div className={cn("p-4 space-y-7", className)}>
       <div className="flex items-center justify-between">
