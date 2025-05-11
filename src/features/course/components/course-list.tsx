@@ -34,8 +34,7 @@ export const CourseList = async ({ className }: CourseListProps) => {
           </DialogShell>
         )}
       </div>
-      if(courses.length === 0) return <EmptyPlayceholder />
-      <ul className="grid md:grid-cols-2 gap-3.5 xl:grid-cols-3">{courses.length && courses.map((course) => <CourseCard key={course._id} course={course} />)}</ul>
+      {courses.length ? <ul className="grid md:grid-cols-2 gap-3.5 xl:grid-cols-3">{courses.length && courses.map((course) => <CourseCard key={course._id} course={course} />)}</ul> : <EmptyPlayceholder />}
     </div>
   );
 };

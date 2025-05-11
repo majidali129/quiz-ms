@@ -34,11 +34,11 @@ export default function CreateCourseForm({ onClose, course }: CreateCourseFormPr
     <Card>
       <Form action={formAction} actionState={formState} onSuccess={onClose}>
         <CardContent className="space-y-4">
-          <FormItem name="title" label="Course Title" type="text" placeholder="e.g., Introduction to Computer Science" formState={formState} />
-          <FormItem name="description" label="Description" placeholder="Provide a brief description of the course" formState={formState} textArea rows={3} />
+          <FormItem name="title" label="Course Title" type="text" placeholder="e.g., Introduction to Computer Science" formState={formState} editValue={course?.title} />
+          <FormItem name="description" label="Description" placeholder="Provide a brief description of the course" formState={formState} textArea rows={3} editValue={course?.description} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem name="code" label=" Course Code" placeholder="e.g., CS101" formState={formState} />
+            <FormItem name="code" label=" Course Code" placeholder="e.g., CS101" formState={formState} editValue={course?.code} />
             <input type="hidden" name="requireApproval" value={String(requireApproval)} />
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
@@ -49,14 +49,14 @@ export default function CreateCourseForm({ onClose, course }: CreateCourseFormPr
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem name="category" label="Category" placeholder="e.g web design" formState={formState} />
-            <FormItem name="price" label="Price" type="number" formState={formState} />
+            <FormItem name="category" label="Category" placeholder="e.g web design" formState={formState} editValue={course?.category} />
+            <FormItem name="price" label="Price" type="number" formState={formState} editValue={course?.price.toString()} />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem name="duration" label="Duration (Hours) " type="number" placeholder="e.g web design" formState={formState} />
+            <FormItem name="duration" label="Duration (Hours) " type="number" placeholder="e.g web design" formState={formState} editValue={course?.duration.toString()} />
             <div className="space-y-2">
               <Label htmlFor="level">Course Level</Label>
-              <Select name="level">
+              <Select name="level" defaultValue={course?.level}>
                 <SelectTrigger id="level" className="w-full h-auto py-2.5">
                   <SelectValue defaultValue="beginner" placeholder="i.e beginner" />
                 </SelectTrigger>
