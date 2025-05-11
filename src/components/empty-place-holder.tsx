@@ -1,10 +1,7 @@
-"use client";
-
 import type React from "react";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Plus, Search } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 interface EmptyCoursesProps {
   title?: string;
