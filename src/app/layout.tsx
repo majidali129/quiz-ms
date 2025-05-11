@@ -34,7 +34,8 @@ export default function RootLayout({
         <ThemeProvider>
           <UserRoleStoreProvider>
             <SessionProvider>
-              <AuthProtector>{children}</AuthProtector>
+              {children}
+              {/* <AuthProtector>{children}</AuthProtector> */}
             </SessionProvider>
           </UserRoleStoreProvider>
           <Toaster expand />

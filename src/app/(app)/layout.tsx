@@ -1,5 +1,6 @@
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar/components/sidebar";
+import { getAuthOrRedirect } from "@/features/auth/queries/get-auth-or-redirect";
 import { SessionProvider } from "next-auth/react";
 
 export default async function MainAppLayout({
@@ -7,6 +8,7 @@ export default async function MainAppLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await getAuthOrRedirect();
   return (
     <SessionProvider>
       <div className="flex items-start">
