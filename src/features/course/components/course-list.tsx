@@ -25,7 +25,7 @@ export const CourseList = async ({ className }: CourseListProps) => {
             triggerText="Create Course"
             trigger={
               <DialogTrigger asChild>
-                <Button>Create Quiz</Button>
+                <Button>Create Course</Button>
               </DialogTrigger>
             }
           >
