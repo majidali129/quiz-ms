@@ -6,13 +6,14 @@ import { isStudent } from "@/features/utils/is-student";
 import { connectDB } from "@/lib/connect-db";
 import { CourseEnrollment } from "@/models/course-enrollment-model";
 import { Course } from "@/models/course-model";
-import { coursesPath } from "@/paths/paths";
 import { formatDate } from "date-fns";
 import { revalidatePath } from "next/cache";
 import { EnrollmentStatus } from "../course-enrollments/types";
 
 export const courseEnrollment = async (courseId: string) => {
   await connectDB();
+  console.log("enrollment called");
+  console.log(courseId);
 
   try {
     const user = await getAuth();
@@ -26,8 +27,8 @@ export const courseEnrollment = async (courseId: string) => {
     }
 
     const courseEnrollment = await CourseEnrollment.findOne({
-      studentId: user.id,
-      courseId,
+      student: user.id,
+      course: courseId,
     });
 
     if (courseEnrollment) {
@@ -42,7 +43,7 @@ export const courseEnrollment = async (courseId: string) => {
 
       await courseEnrollment.save({ validateBeforeSave: false });
     } else {
-      const newEnrollment = { studentId: user.id, courseId, enrolledAt: formatDate(new Date(), "yyyy-MM-dd") };
+      const newEnrollment = { student: user.id, course: courseId, enrolledAt: formatDate(new Date(), "yyyy-MM-dd") };
       await CourseEnrollment.create(newEnrollment);
     }
   } catch (error) {
@@ -50,5 +51,5 @@ export const courseEnrollment = async (courseId: string) => {
     return fromErrorToActionState(error);
   }
 
-  revalidatePath(coursesPath());
+  revalidatePath("/courses", "layout");
 };

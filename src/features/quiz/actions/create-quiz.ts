@@ -1,11 +1,12 @@
 "use server";
 
+import { setCookieByKey } from "@/actions/cookies";
 import { ActionState, fromErrorToActionState, toActionState } from "@/components/form/utils/to-action-state";
 import { getAuthOrRedirect } from "@/features/auth/queries/get-auth-or-redirect";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { connectDB } from "@/lib/connect-db";
 import { Quiz } from "@/models/quiz-model";
-import { quizzesPath } from "@/paths/paths";
+import { quizPath, quizzesPath } from "@/paths/paths";
 import { revalidatePath } from "next/cache";
 import { z, ZodError } from "zod";
 
@@ -38,17 +39,16 @@ const createQuizSchema = z.object({
   settings: quizSettingsSchema,
   schedule: quizScheduleSchema,
 });
-export const createQuize = async (_initialState: ActionState, formData: FormData) => {
+export const createQuize = async (quizId: string | undefined, _initialState: ActionState, formData: FormData) => {
   await connectDB();
   try {
     const session = await getAuthOrRedirect();
-    console.log(isTeacher(session.user.role));
+
     if (!isTeacher(session.user.role)) {
       return toActionState("ERROR", "Only teachers can create quizzes", formData);
     }
 
     const rawData = Object.fromEntries(formData);
-    console.log(rawData);
     const { questions, duration, maxAttempts, passingScore, showAnswers, startDate, endDate, startTime, isActive } = rawData;
     if (typeof questions !== "string") {
       return toActionState("ERROR", "Questions data must be a JSON string");
@@ -78,8 +78,17 @@ export const createQuize = async (_initialState: ActionState, formData: FormData
       },
     };
     const validatedData = await createQuizSchema.parseAsync(quizDataForValidation);
-    console.log("validatedData", validatedData);
-    await Quiz.create({ ...validatedData, createdBy: session.user.id });
+
+    console.log("validatedData", validatedData, quizId);
+
+    if (quizId) {
+      const udpatedQuiz = await Quiz.findOneAndUpdate({ _id: quizId, createdBy: session.user.id }, validatedData);
+      if (!udpatedQuiz) {
+        return toActionState("ERROR", "Quiz not found or not authorized to update", formData);
+      }
+    } else {
+      await Quiz.create({ ...validatedData, createdBy: session.user.id });
+    }
   } catch (error) {
     console.log(error);
     if (error instanceof ZodError) {
@@ -88,5 +97,9 @@ export const createQuize = async (_initialState: ActionState, formData: FormData
   }
 
   revalidatePath(quizzesPath());
-  return toActionState("SUCCESS", "Quiz created successfully");
+  if (quizId) {
+    await setCookieByKey("toast", "Quiz updated successfully");
+    revalidatePath(quizPath(quizId));
+  }
+  return toActionState("SUCCESS", quizId ? "Updated quiz" : "Created quiz");
 };

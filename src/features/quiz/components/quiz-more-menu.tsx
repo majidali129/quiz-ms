@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { isTeacher } from "@/features/utils/is-teacher";
 import { quizPath } from "@/paths/paths";
 import { ROLE } from "@/types/index";
-import { Edit, Eye, Play, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { deleteQuiz } from "../actions/delete-quiz";
@@ -28,26 +28,12 @@ export const QuizCardMoreMenu = ({ quiz, trigger, role }: QuizMoreMenuProps) => 
     ),
   });
 
-  const editButton = (
-    <DropdownMenuItem>
-      <Edit className="mr-2 h-4 w-4" />
-      <span>Edit Quiz</span>
-    </DropdownMenuItem>
-  );
-
-  const resultsButton = (
-    <DropdownMenuItem>
-      <Eye className="mr-2 h-4 w-4" />
-      <span>View Results</span>
-    </DropdownMenuItem>
-  );
-
-  const pauseResumeButton = (
-    <DropdownMenuItem>
-      <Play className="mr-2 h-4 w-4" />
-      <span>{quiz.completionStatus === "in-progress" ? "Resume Quiz" : "Start Quiz"}</span>
-    </DropdownMenuItem>
-  );
+  // const pauseResumeButton = (
+  //   <DropdownMenuItem>
+  //     <Play className="mr-2 h-4 w-4" />
+  //     <span>{quiz.completionStatus === "in-progress" ? "Resume Quiz" : "Start Quiz"}</span>
+  //   </DropdownMenuItem>
+  // );
 
   const viewDetailsButton = (
     <Link href={quizPath(quiz._id)}>
@@ -65,15 +51,13 @@ export const QuizCardMoreMenu = ({ quiz, trigger, role }: QuizMoreMenuProps) => 
         <DropdownMenuContent align="end" side="right">
           {isTeacher(role) ? (
             <>
-              {editButton}
               {viewDetailsButton}
-              {resultsButton}
               <DropdownMenuSeparator />
               {deleteButton}
             </>
           ) : (
             <>
-              {quiz.completionStatus === "completed" ? resultsButton : pauseResumeButton}
+              {/* {pauseResumeButton} */}
               {viewDetailsButton}
             </>
           )}

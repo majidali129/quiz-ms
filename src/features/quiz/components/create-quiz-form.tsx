@@ -15,25 +15,29 @@ import { Trash2 } from "lucide-react";
 import type React from "react";
 import { use, useActionState, useState } from "react";
 import { createQuize } from "../actions/create-quiz";
+import { Quiz } from "../types";
 
 type CreateQuizFormProps = {
   open?: boolean;
   onClose?: () => void;
   coursesPromise: Promise<Course[]>;
+  quiz?: Quiz;
 };
 
-export const CreateQuizForm = ({ onClose, coursesPromise }: CreateQuizFormProps) => {
+export const CreateQuizForm = ({ onClose, coursesPromise, quiz }: CreateQuizFormProps) => {
   const courses = use(coursesPromise);
-  const [formState, action] = useActionState(createQuize, Empty_Action_State);
+  const [formState, action] = useActionState(createQuize.bind(null, quiz?._id), Empty_Action_State);
   const [quizType, setQuizType] = useState("Objective");
   const [difficulty, setDifficulty] = useState("easy");
-  const [questions, setQuestions] = useState([
-    {
-      questionText: "",
-      options: ["", "", "", ""],
-      correctOption: 0,
-    },
-  ]);
+  const [questions, setQuestions] = useState(
+    quiz?.questions ?? [
+      {
+        questionText: "",
+        options: ["", "", "", ""],
+        correctOption: 0,
+      },
+    ]
+  );
 
   // Add a new question
   const addQuestion = () => {
@@ -75,17 +79,20 @@ export const CreateQuizForm = ({ onClose, coursesPromise }: CreateQuizFormProps)
     setQuestions(updatedQuestions);
   };
 
+  const course = courses.find((course) => course._id === quiz?.course._id);
+
+  console.log(course);
   return (
     <Card className="w-full ">
       <Form action={action} actionState={formState} onSuccess={onClose}>
         <CardContent className="space-y-6">
           {/* Basic Quiz Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormItem name="title" label="Quiz Title" type="text" required={true} placeholder="Enter quiz title" formState={formState} />
+            <FormItem name="title" label="Quiz Title" type="text" required={true} placeholder="Enter quiz title" formState={formState} editValue={quiz?.title} />
 
             <div className="space-y-2  ">
               <Label htmlFor="course">Course</Label>
-              <Select name="course" defaultValue="">
+              <Select name="course" defaultValue={quiz?.course?._id}>
                 <SelectTrigger className="w-full h-auto py-2.5">
                   <SelectValue placeholder="Select a course" />
                 </SelectTrigger>
@@ -100,12 +107,12 @@ export const CreateQuizForm = ({ onClose, coursesPromise }: CreateQuizFormProps)
             </div>
           </div>
           <input type="hidden" name="questions" value={JSON.stringify(questions)} />
-          <FormItem name="description" label="Description (Optional)" placeholder="Enter quiz description" required={true} formState={formState} textArea />
+          <FormItem name="description" label="Description (Optional)" placeholder="Enter quiz description" required={true} formState={formState} textArea editValue={quiz?.description} />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="quizType">Quiz Type</Label>
-              <Select name="quizType" value={quizType} onValueChange={setQuizType}>
+              <Select name="quizType" value={quiz?.quizType ?? quizType} onValueChange={setQuizType}>
                 <SelectTrigger className="w-full h-auto py-2.5">
                   <SelectValue />
                 </SelectTrigger>
@@ -116,10 +123,10 @@ export const CreateQuizForm = ({ onClose, coursesPromise }: CreateQuizFormProps)
               </Select>
             </div>
 
-            <FormItem name="duration" label="Duration (minutes)" type="number" min="1" max="180" required={true} formState={formState} />
+            <FormItem name="duration" label="Duration (minutes)" type="number" min="1" max="180" required={true} editValue={quiz?.settings.duration.toString()} formState={formState} />
             <div className="space-y-2">
               <Label htmlFor="difficulty">Difficulty</Label>
-              <Select name="difficulty" value={difficulty} onValueChange={setDifficulty}>
+              <Select name="difficulty" value={quiz?.difficulty ?? difficulty} onValueChange={setDifficulty}>
                 <SelectTrigger className="w-full h-auto py-2.5">
                   <SelectValue />
                 </SelectTrigger>
@@ -133,21 +140,21 @@ export const CreateQuizForm = ({ onClose, coursesPromise }: CreateQuizFormProps)
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormItem name="maxAttempts" label="Max Attempts" type="number" min="1" max="10" required={true} formState={formState} />
-            <FormItem name="passingScore" label="Passing Score (%)" type="number" min="1" max="100" required={true} formState={formState} />
-            <FormItem name="startDate" label="Start Date" type="date" required={true} formState={formState} />
+            <FormItem name="maxAttempts" label="Max Attempts" type="number" min="1" max="10" required={true} formState={formState} editValue={quiz?.settings.maxAttempts.toString()} />
+            <FormItem name="passingScore" label="Passing Score (%)" type="number" min="1" max="100" required={true} formState={formState} editValue={quiz?.settings.passingScore.toString()} />
+            <FormItem name="startDate" label="Start Date" type="date" required={true} formState={formState} editValue={quiz?.schedule.startDate} />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <FormItem name="startTime" label="Start Time" type="time" required={true} formState={formState} />
-            <FormItem name="endDate" label="End Date" type="date" required={true} formState={formState} />
+            <FormItem name="startTime" label="Start Time" type="time" required={true} formState={formState} editValue={quiz?.schedule.startTime} />
+            <FormItem name="endDate" label="End Date" type="date" required={true} formState={formState} editValue={quiz?.schedule.endDate} />
           </div>
 
           {/* Questions Section */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <Label className="text-lg font-medium">Questions</Label>
-              <Button type="button" onClick={addQuestion} className="bg-indigo-600 hover:bg-indigo-700">
+              <Button type="button" onClick={addQuestion} variant="outline">
                 Add Question
               </Button>
             </div>
@@ -182,7 +189,7 @@ export const CreateQuizForm = ({ onClose, coursesPromise }: CreateQuizFormProps)
           <Button onClick={onClose} type="button" variant="outline">
             Cancel
           </Button>
-          <SubmitButton label="Create Quiz" className="w-fit" />
+          <SubmitButton label={quiz ? "Save Quiz" : "Create Quiz"} className="w-fit" />
         </CardFooter>
       </Form>
     </Card>

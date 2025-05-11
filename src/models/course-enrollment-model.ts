@@ -1,8 +1,8 @@
 import mongoose, { Document, Model, ObjectId, Schema, Types } from "mongoose";
 
 interface ICourseEnrollment extends Document {
-  courseId: ObjectId;
-  studentId: ObjectId;
+  course: ObjectId;
+  student: ObjectId;
   enrolledAt: string;
   enrollmentStatus: "active" | "completed" | "dropped";
   unEnrolledAt?: string;
@@ -12,13 +12,13 @@ interface ICourseEnrollment extends Document {
 
 const courseEnrollmentSchema: Schema<ICourseEnrollment> = new Schema(
   {
-    courseId: {
+    course: {
       type: Types.ObjectId,
       ref: "Course",
       required: true,
       index: true,
     },
-    studentId: {
+    student: {
       type: Types.ObjectId,
       ref: "User",
       required: true,

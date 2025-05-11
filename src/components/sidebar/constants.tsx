@@ -1,11 +1,11 @@
-import { BookOpen, ClipboardList, Clock, HelpCircle, HomeIcon, Settings } from "lucide-react";
+import { BookOpen, ClipboardList, Clock, HelpCircle, HomeIcon } from "lucide-react";
 export const sidebar_items = {
   teacher: [
     { label: "Dashboard", href: "/dashboard", icon: <HomeIcon /> },
     { label: "Courses", href: "/courses", icon: <BookOpen /> },
     { label: "Quizzes", href: "/quizzes", icon: <ClipboardList /> },
     // { label: "Students", href: "/students", icon: <Users /> },
-    { label: "Settings", href: "/settings", icon: <Settings /> },
+    // { label: "Settings", href: "/settings", icon: <Settings /> },
   ],
   student: [
     { label: "Dashboard", href: "/student/dashboard", icon: <HomeIcon /> },

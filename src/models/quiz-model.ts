@@ -2,6 +2,7 @@ import { IQuizSchedule, IQuizSettings, QuizCompleteStatus, QuizDifficulty } from
 import mongoose, { Document, Model, ObjectId, Schema, Types } from "mongoose";
 
 interface IQuestion {
+  _id: ObjectId;
   questionText: string;
   options: Array<string>;
   correctOption: number;

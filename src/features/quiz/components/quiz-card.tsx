@@ -63,11 +63,11 @@ export const QuizCard = ({ quiz, role }: QuizItemProps) => {
   );
 
   return (
-    <Card className={`w-full border-0 gap-3 py-4 `}>
+    <Card className={`w-full  gap-3 py-4 `}>
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg text-zinc-900 dark:text-zinc-50 line-clamp-1">{title}</h3>
+            <h3 className="font-semibold text-lg text-foreground line-clamp-1">{title}</h3>
             <div className="flex flex-wrap gap-1.5 mt-1.5">
               <Badge variant="outline" className="font-normal">
                 {course.title}
@@ -96,7 +96,7 @@ export const QuizCard = ({ quiz, role }: QuizItemProps) => {
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
             {/* <span>{duration} min</span> */}
-            <span>{32} min</span>
+            <span>{quiz.settings.duration} min</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />

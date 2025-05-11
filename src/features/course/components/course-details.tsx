@@ -6,7 +6,6 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getAuth } from "@/features/auth/queries/get-auth";
-import { getEnrollments } from "@/features/queries/get-enrollments";
 import { isStudent } from "@/features/utils/is-student";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { coursesPath } from "@/paths/paths";
@@ -15,6 +14,7 @@ import Link from "next/link";
 import { CourseEnrollment, EnrollmentStatus } from "../course-enrollments/types";
 import { Course, CourseLevel } from "../types";
 import { isCourseOwner } from "../utils/is-course-owner";
+import { CourseEnrollmentButton } from "./course-enrollment-button";
 
 // Helper function to get level badge color
 function getLevelColor(level: CourseLevel): string {
@@ -32,13 +32,17 @@ function getLevelColor(level: CourseLevel): string {
 
 type CourseDetailsProps = {
   course: Course;
-  enrollments: CourseEnrollment[];
+  courseEnrollments: CourseEnrollment[];
 };
 
-export const CourseDetails = async ({ course, enrollments }: CourseDetailsProps) => {
+export const CourseDetails = async ({ course, courseEnrollments }: CourseDetailsProps) => {
   const user = await getAuth();
-  const courseEnrollments = await getEnrollments(course._id, undefined, EnrollmentStatus.dropped);
-  const isEnrolled = enrollments?.some((enrollment) => enrollment.studentId.toString() === user.id);
+  const isEnrolled = courseEnrollments?.some((enrollment) => enrollment.course === course._id && enrollment.enrollmentStatus === EnrollmentStatus.active && enrollment.student._id === user.id);
+  const activeEnrollments = courseEnrollments.filter((enrollment) => enrollment.enrollmentStatus === EnrollmentStatus.active);
+  console.log(course.createdBy._id, user.id);
+  console.log("isEnrolled", isEnrolled);
+  console.log(courseEnrollments);
+  console.log("activeEnrollments", activeEnrollments);
 
   return (
     <div className="w-full px-6 space-y-5 ">
@@ -59,10 +63,10 @@ export const CourseDetails = async ({ course, enrollments }: CourseDetailsProps)
                 </CardDescription>
               </div>
               <div className="flex items-center gap-2.5">
-                {isEnrolled && isStudent(user.role) && (
-                  <Button variant="outline" size="sm" className="rounded-md h-[30px] ">
-                    Unenroll
-                  </Button>
+                {isStudent(user.role) && (
+                  <>
+                    <CourseEnrollmentButton isEnrolled={isEnrolled} courseId={course._id} variant="ghost" />
+                  </>
                 )}
                 <Badge variant="outline" className={`${getLevelColor(course.level)} text-xs md:text-sm px-3 py-1 font-medium`}>
                   {course.level}
@@ -119,7 +123,7 @@ export const CourseDetails = async ({ course, enrollments }: CourseDetailsProps)
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Students</p>
-                    <p className="font-medium">{course.students?.length || 0}</p>
+                    <p className="font-medium">{activeEnrollments.length || 0}</p>
                   </div>
                 </div>
 
@@ -162,7 +166,7 @@ export const CourseDetails = async ({ course, enrollments }: CourseDetailsProps)
         </Card>
 
         {/* Students Section */}
-        {!isCourseOwner(course.createdBy._id, user.id) ? (
+        {isCourseOwner(course.createdBy._id, user.id) && isTeacher(user.role) ? (
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Enrolled Students</h2>
@@ -172,30 +176,32 @@ export const CourseDetails = async ({ course, enrollments }: CourseDetailsProps)
               </Button>
             </div>
 
-            {course.students && course.students.length > 0 ? (
+            {activeEnrollments.length ? (
               <Card>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto px-4">
                   <Table>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Student</TableHead>
                         <TableHead>Email</TableHead>
+                        <TableHead>Enrollet At</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {course.students.map((student) => (
-                        <TableRow key={student._id}>
+                      {activeEnrollments.map((enrollment) => (
+                        <TableRow key={enrollment._id}>
                           <TableCell>
                             <div className="flex items-center gap-3">
                               <Avatar>
-                                <AvatarImage src={student.picture || "/placeholder.svg"} alt={student.userName} />
-                                <AvatarFallback>{student.userName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                <AvatarImage src={enrollment.student.picture || "/placeholder.svg"} alt={enrollment.student.userName} />
+                                <AvatarFallback>{enrollment.student.userName.substring(0, 2).toUpperCase()}</AvatarFallback>
                               </Avatar>
-                              <span className="font-medium">{student.userName}</span>
+                              <span className="font-medium">{enrollment.student.userName}</span>
                             </div>
                           </TableCell>
-                          <TableCell>{student.email}</TableCell>
+                          <TableCell>{enrollment.student.email}</TableCell>
+                          <TableCell>{enrollment.enrolledAt}</TableCell>
                           <TableCell className="text-right">
                             <Button variant="ghost" size="sm">
                               View
@@ -224,12 +230,14 @@ export const CourseDetails = async ({ course, enrollments }: CourseDetailsProps)
         ) : (
           <>
             {!isEnrolled ? (
-              <Card className="p-8 text-center">
-                <div className="flex flex-col items-center gap-2">
+              <Card className="p-8 text-center border">
+                <div className="flex flex-col items-center justify-center gap-2">
                   <BookOpen className="h-12 w-12 text-gray-300" />
                   <h3 className="text-lg font-medium">Not Enrolled yet</h3>
                   <p className="text-muted-foreground max-w-md mx-auto">Enroll yourself to get most of it.</p>
-                  <Button className="mt-4">Let&apos;s Enroll</Button>
+                  {/* <div className="flex items-center justify-center"> */}
+                  <CourseEnrollmentButton isEnrolled={isEnrolled} courseId={course._id} className="w-fit" />
+                  {/* </div> */}
                 </div>
               </Card>
             ) : null}

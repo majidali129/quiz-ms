@@ -5,29 +5,29 @@ import { Empty_Action_State } from "@/components/form/utils/to-action-state";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { coursePath } from "@/paths/paths";
-import { Edit, Eye, Trash2, UserMinus, UserPlus, Users } from "lucide-react";
+import { Edit, Eye, Trash2, UserMinus, UserPlus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { ReactNode, use, useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { ReactNode, useActionState } from "react";
 import { courseEnrollment } from "../actions/course-enrollment";
 import { deleteCourse } from "../actions/delete-course";
-import { CourseEnrollment, EnrollmentStatus } from "../course-enrollments/types";
 import { Course } from "../types";
 import { isCourseOwner } from "../utils/is-course-owner";
 
 type QuizMoreMenuProps = {
   course: Course;
   trigger: ReactNode;
-  studentEnrollmentsPromise: Promise<CourseEnrollment[]>;
+  isEnrolled: boolean;
 };
 
-export const CourseCardMoreMenu = ({ course, trigger, studentEnrollmentsPromise }: QuizMoreMenuProps) => {
+export const CourseCardMoreMenu = ({ course, trigger, isEnrolled }: QuizMoreMenuProps) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const [formState, enrollmentAction] = useActionState(courseEnrollment.bind(null, course._id), Empty_Action_State);
 
-  const studentEnrollments = use(studentEnrollmentsPromise);
   const isOwner = isCourseOwner(course.createdBy._id, session?.user.id);
-  const isEnrolled = studentEnrollments.length > 0;
+  console.log(formState);
 
   const [deleteButton, dialog] = useConfirmDialog({
     action: deleteCourse.bind(null, course._id),
@@ -40,15 +40,9 @@ export const CourseCardMoreMenu = ({ course, trigger, studentEnrollmentsPromise 
   });
 
   const editButton = (
-    <DropdownMenuItem>
+    <DropdownMenuItem onClick={() => router.push(coursePath(course._id))}>
       <Edit className="mr-2 h-4 w-4" />
       <span>Edit Course</span>
-    </DropdownMenuItem>
-  );
-  const manageStudentsButton = (
-    <DropdownMenuItem>
-      <Users className="mr-2 h-4 w-4" />
-      Manage students
     </DropdownMenuItem>
   );
 
@@ -89,7 +83,6 @@ export const CourseCardMoreMenu = ({ course, trigger, studentEnrollmentsPromise 
           {isOwner && isTeacher(session?.user.role) ? (
             <>
               {editButton}
-              {manageStudentsButton}
               {viewDetailsButton}
               <DropdownMenuSeparator />
               {deleteButton}

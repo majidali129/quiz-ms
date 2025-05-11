@@ -19,9 +19,10 @@ type FormItemProps = {
   rows?: number;
   isLogin?: boolean;
   formState: ActionState;
+  editValue?: string;
 };
 
-const FormItem = ({ label, name, placeholder, min, max, rows, required, type = "text", textArea = false, className, isLogin = false, formState }: FormItemProps) => {
+const FormItem = ({ label, name, placeholder, min, max, rows, required, type = "text", textArea = false, className, isLogin = false, formState, editValue }: FormItemProps) => {
   const renderLabel =
     type === "password" ? (
       <div className="flex items-center">
@@ -39,9 +40,9 @@ const FormItem = ({ label, name, placeholder, min, max, rows, required, type = "
     <div className={cn("grid gap-1.5", className)}>
       {renderLabel}
       {textArea ? (
-        <Textarea name={name} required={required} rows={rows} defaultValue={formState?.payload?.get(name) as string} placeholder={placeholder} />
+        <Textarea name={name} required={required} rows={rows} defaultValue={(formState?.payload?.get(name) as string) ?? editValue} placeholder={placeholder} />
       ) : (
-        <Input autoComplete="off" min={min} max={max} id={name} name={name} type={type} placeholder={placeholder} required={required} defaultValue={formState?.payload?.get(name) as string} />
+        <Input autoFocus={false} autoComplete="off" min={min} max={max} id={name} name={name} type={type} placeholder={placeholder} required={required} defaultValue={(formState?.payload?.get(name) as string) ?? editValue} />
       )}
       {/* {formState?.fieldErrors && <FieldError name={name} actionState={formState} />} */}
       <FieldError name={name} actionState={formState} />

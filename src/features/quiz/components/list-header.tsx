@@ -13,7 +13,7 @@ const ListHeader = ({ heading, dialogTitle, children, dialogDescription, dialogT
   return (
     <div className="flex items-center justify-between">
       <h2 className="text-3xl tracking-wide">{heading}</h2>
-      <DialogShell title={dialogTitle} description={dialogDescription} triggerText={dialogTriggerText}>
+      <DialogShell title={dialogTitle} description={dialogDescription} triggerText={dialogTriggerText} trigger={<></>}>
         {children}
       </DialogShell>
     </div>

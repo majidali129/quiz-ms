@@ -1,24 +1,22 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { cloneElement, ReactElement, useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { cloneElement, ReactElement, ReactNode, useState } from "react";
 
 type DialogShellProps = {
   children: ReactElement<{ onClose?: () => void }>;
   triggerText: string;
   title?: string;
   description: string;
+  trigger: ReactNode;
 };
 
-export const DialogShell = ({ children, triggerText, title, description }: DialogShellProps) => {
+export const DialogShell = ({ children, title, description, trigger }: DialogShellProps) => {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>{triggerText}</Button>
-      </DialogTrigger>
+      {trigger}
       <DialogContent className="sm:!max-w-[42rem] gap-5 overflow-y-auto max-h-[calc(100vh-60px)] hide-scroll">
         <div>
           <DialogTitle className="text-2xl  font-bold text-foreground">{title}</DialogTitle>

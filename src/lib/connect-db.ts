@@ -1,8 +1,7 @@
-// import mongoose, { Connection } from "mongoose";
-import mongoose from "mongoose/dist/browser.umd.js";
+import mongoose, { Connection } from "mongoose";
 
 type ConnectionType = {
-  isConnected: mongoose.Connection | null;
+  isConnected: Connection | null;
 };
 
 const connection: ConnectionType = {

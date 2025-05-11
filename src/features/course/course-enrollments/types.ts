@@ -6,8 +6,8 @@ export const enum EnrollmentStatus {
 
 export type CourseEnrollment = {
   _id: string;
-  courseId: string;
-  studentId: string;
+  course: string;
+  student: { _id: string; userName: string; email: string; picture: string };
   enrolledAt: string;
   enrollmentStatus: EnrollmentStatus;
   unEnrolledAt: string;

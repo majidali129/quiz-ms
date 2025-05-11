@@ -1,6 +1,6 @@
 import { CourseDetails } from "@/features/course/components/course-details";
 import { getCourse } from "@/features/queries/get-course";
-import { getCourseEnrollments } from "@/features/queries/get-course-enrollments";
+import { getEnrollments } from "@/features/queries/get-enrollments";
 import { notFound } from "next/navigation";
 
 type CourseDetailsPageProps = {
@@ -10,8 +10,8 @@ const CoruseDetailsPage = async ({ params }: CourseDetailsPageProps) => {
   const courseId = (await params).courseId;
   const course = await getCourse(courseId);
   if (!course) notFound();
-  const courseEnrollments = await getCourseEnrollments(courseId);
+  const courseEnrollments = await getEnrollments(courseId);
 
-  return <CourseDetails course={course} enrollments={courseEnrollments} />;
+  return <CourseDetails course={course} courseEnrollments={courseEnrollments} />;
 };
 export default CoruseDetailsPage;

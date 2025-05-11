@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAuth } from "@/features/auth/queries/get-auth";
 import { getEnrollments } from "@/features/queries/get-enrollments";
-import { getStudentEnrollments } from "@/features/queries/get-student-enrollments";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, MoreVertical, UserMinus, UserPlus, Users } from "lucide-react";
@@ -18,20 +17,19 @@ interface CourseCardProps {
 
 const CourseCard = async ({ course }: CourseCardProps) => {
   const user = await getAuth();
-  const studentEnrollmentsPromise = getEnrollments(undefined, undefined, EnrollmentStatus.active);
+  const studentEnrollments = await getEnrollments(course._id);
   const userRole = user.role;
   const userId = user.id;
 
   const isCreator = isCourseOwner(course.createdBy._id, userId);
 
-  const isEnrolled = (course: Course) => {
-    return course.students.some((student) => student._id === userId);
-  };
+  const isEnrolled = studentEnrollments.some((enrollment) => enrollment.course === course._id && enrollment.enrollmentStatus === EnrollmentStatus.active && enrollment.student._id === user.id);
+  const activeEnrollments = studentEnrollments.filter((enrollment) => enrollment.enrollmentStatus === EnrollmentStatus.active).length;
 
   const courseMoreMenu = (
     <CourseCardMoreMenu
       course={course}
-      studentEnrollmentsPromise={studentEnrollmentsPromise}
+      isEnrolled={isEnrolled}
       trigger={
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreVertical className="h-4 w-4" />
@@ -71,17 +69,17 @@ const CourseCard = async ({ course }: CourseCardProps) => {
         <div className="flex items-center text-sm">
           <Users className="mr-1 h-4 w-4" />
           <span>
-            {course.students.length} student{course.students.length !== 1 ? "s" : ""}
+            {activeEnrollments} student{activeEnrollments !== 1 ? "s" : ""}
           </span>
         </div>
       </CardContent>
 
-      <CardFooter className="pt-2">
+      <CardFooter className="pt-2 hidden">
         {isTeacher(userRole) ? (
           <Button variant="outline" className="w-full" disabled={isCreator}>
             {isCreator ? "View Course" : "Not Your Course"}
           </Button>
-        ) : isEnrolled(course) ? (
+        ) : isEnrolled ? (
           <Button variant="outline" className="w-full">
             <UserMinus className="mr-2 h-4 w-4" />
             Unenroll

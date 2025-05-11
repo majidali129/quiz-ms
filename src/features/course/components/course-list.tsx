@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { DialogTrigger } from "@/components/ui/dialog";
 import { getAuth } from "@/features/auth/queries/get-auth";
 import { DialogShell } from "@/features/quiz/components/dialog-shell";
 import { isTeacher } from "@/features/utils/is-teacher";
@@ -17,7 +19,16 @@ export const CourseList = async ({ className }: CourseListProps) => {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl tracking-wide">Courses ({courses.length})</h2>
         {isTeacher(user.role) && (
-          <DialogShell title="Create new course" description="Publish a new couse for your students" triggerText="Create Course">
+          <DialogShell
+            title="Create new course"
+            description="Publish a new couse for your students"
+            triggerText="Create Course"
+            trigger={
+              <DialogTrigger asChild>
+                <Button>Create Quiz</Button>
+              </DialogTrigger>
+            }
+          >
             <CreateCourseForm />
           </DialogShell>
         )}

@@ -1,3 +1,5 @@
+import { AuthProtector } from "@/components/auth-protector";
+import RedirectToast from "@/components/redirect-toast";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { UserRoleStoreProvider } from "@/providers/user-role-store-provider";
 import type { Metadata } from "next";
@@ -29,8 +31,11 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden`}>
         <ThemeProvider>
-          <UserRoleStoreProvider>{children}</UserRoleStoreProvider>
+          <UserRoleStoreProvider>
+            <AuthProtector>{children}</AuthProtector>
+          </UserRoleStoreProvider>
           <Toaster expand />
+          <RedirectToast />
         </ThemeProvider>
       </body>
     </html>

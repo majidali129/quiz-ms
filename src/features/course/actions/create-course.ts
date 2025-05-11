@@ -15,7 +15,8 @@ export const createCourse = async (_initialState: ActionState, formData: FormDat
   try {
     const user = await getAuth();
     const rawData = Object.fromEntries(formData);
-    const validatedData = await createCourseSchema.parseAsync({ ...rawData, requireApproval: Boolean(rawData.requireApproval) });
+    console.log("rawData", rawData);
+    const validatedData = await createCourseSchema.parseAsync({ ...rawData, requireApproval: rawData.requireApproval === "true" });
     console.log("validatedData", validatedData);
 
     const existingCourseWithCode = await Course.findOne({ code: validatedData.code }).lean();

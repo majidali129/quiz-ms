@@ -26,6 +26,8 @@ export default function CreateCourseForm({ onClose }: CreateCourseFormProps) {
     setRequireApproval((prevApproval) => !prevApproval);
   };
 
+  console.log(requireApproval);
+
   return (
     <Card>
       <Form action={formAction} actionState={formState} onSuccess={onClose}>
