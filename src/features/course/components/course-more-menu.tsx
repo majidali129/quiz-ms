@@ -5,10 +5,9 @@ import { Empty_Action_State } from "@/components/form/utils/to-action-state";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { coursePath } from "@/paths/paths";
-import { Edit, Eye, Trash2, UserMinus, UserPlus } from "lucide-react";
+import { Eye, Trash2, UserMinus, UserPlus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ReactNode, useActionState } from "react";
 import { courseEnrollment } from "../actions/course-enrollment";
 import { deleteCourse } from "../actions/delete-course";
@@ -22,7 +21,6 @@ type QuizMoreMenuProps = {
 };
 
 export const CourseCardMoreMenu = ({ course, trigger, isEnrolled }: QuizMoreMenuProps) => {
-  const router = useRouter();
   const { data: session } = useSession();
   const [formState, enrollmentAction] = useActionState(courseEnrollment.bind(null, course._id), Empty_Action_State);
 
