@@ -11,6 +11,7 @@ import { getAuth } from "@/features/auth/queries/get-auth";
 import { getCourses } from "@/features/queries/get-courses";
 import { getQuizResult } from "@/features/queries/get-quiz-result";
 import { getQuizStats } from "@/features/queries/get-quiz-stats";
+import { isStudent } from "@/features/utils/is-student";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { quizAttemptPath, quizzesPath } from "@/paths/paths";
 import Link from "next/link";
@@ -377,7 +378,7 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
         </div>
       </div>
 
-      {quizResult && isTeacher(user.role) && <QuizSubmissionResult quiz={quiz} result={quizResult} />}
+      {quizResult && isStudent(user.role) && <QuizSubmissionResult quiz={quiz} result={quizResult} />}
     </>
   );
 };
