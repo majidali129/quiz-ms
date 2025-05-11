@@ -4,6 +4,7 @@ import { getAuth } from "@/features/auth/queries/get-auth";
 import { DialogShell } from "@/features/quiz/components/dialog-shell";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { cn } from "@/lib/utils";
+import { ROLE } from "@/types/index";
 import { getCourses } from "../../queries/get-courses";
 import { CourseCard } from "./course-card";
 import CreateCourseForm from "./course-create-form";
@@ -12,8 +13,8 @@ type CourseListProps = {
   className?: string;
 };
 export const CourseList = async ({ className }: CourseListProps) => {
-  const courses = await getCourses();
   const user = await getAuth();
+  const courses = await getCourses(user.role === ROLE.teacher ? user.id : undefined);
   return (
     <div className={cn("p-4 space-y-7", className)}>
       <div className="flex items-center justify-between">

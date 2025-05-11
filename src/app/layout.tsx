@@ -33,10 +33,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-hidden`}>
         <ThemeProvider>
           <UserRoleStoreProvider>
-            <SessionProvider>
-              {children}
-              {/* <AuthProtector>{children}</AuthProtector> */}
-            </SessionProvider>
+            <SessionProvider>{children}</SessionProvider>
           </UserRoleStoreProvider>
           <Toaster expand />
           <RedirectToast />

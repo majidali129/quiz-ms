@@ -13,12 +13,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { useActionState, useState } from "react";
 import { createCourse } from "../actions/create-course";
+import { Course } from "../types";
 
 interface CreateCourseFormProps {
   onClose?: () => void;
+  course?: Course;
 }
 
-export default function CreateCourseForm({ onClose }: CreateCourseFormProps) {
+export default function CreateCourseForm({ onClose, course }: CreateCourseFormProps) {
   const [formState, formAction] = useActionState(createCourse, Empty_Action_State);
   const [requireApproval, setRequireApproval] = useState(true);
 
