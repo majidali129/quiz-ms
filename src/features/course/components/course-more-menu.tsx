@@ -39,13 +39,6 @@ export const CourseCardMoreMenu = ({ course, trigger, isEnrolled }: QuizMoreMenu
     ),
   });
 
-  const editButton = (
-    <DropdownMenuItem onClick={() => router.push(coursePath(course._id))}>
-      <Edit className="mr-2 h-4 w-4" />
-      <span>Edit Course</span>
-    </DropdownMenuItem>
-  );
-
   const viewDetailsButton = (
     <Link href={coursePath(course._id)}>
       <DropdownMenuItem>
@@ -82,7 +75,6 @@ export const CourseCardMoreMenu = ({ course, trigger, isEnrolled }: QuizMoreMenu
         <DropdownMenuContent align="end" side="right">
           {isOwner && isTeacher(session?.user.role) ? (
             <>
-              {/* {editButton} */}
               {viewDetailsButton}
               <DropdownMenuSeparator />
               {deleteButton}
