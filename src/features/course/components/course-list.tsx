@@ -1,3 +1,4 @@
+import { EmptyPlayceholder } from "@/components/empty-place-holder";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { getAuth } from "@/features/auth/queries/get-auth";
@@ -33,6 +34,7 @@ export const CourseList = async ({ className }: CourseListProps) => {
           </DialogShell>
         )}
       </div>
+      if(courses.length === 0) return <EmptyPlayceholder />
       <ul className="grid md:grid-cols-2 gap-3.5 xl:grid-cols-3">{courses.length && courses.map((course) => <CourseCard key={course._id} course={course} />)}</ul>
     </div>
   );

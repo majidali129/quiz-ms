@@ -1,3 +1,4 @@
+import { EmptyPlayceholder } from "@/components/empty-place-holder";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { getAuth } from "@/features/auth/queries/get-auth";
@@ -35,7 +36,7 @@ const QuizList = async ({ className }: CourseListProps) => {
           </DialogShell>
         )}
       </div>
-
+      if(!quizzes.length) return <EmptyPlayceholder title="No quizzes yet" description="Create your first quiz" />
       <ul className="grid grid-cols-3 lg:gap-x-3.5 gap-y-3">{quizzes.length && quizzes.map((quiz) => <QuizCard key={quiz._id} quiz={quiz} role={user.role} />)}</ul>
     </div>
   );
