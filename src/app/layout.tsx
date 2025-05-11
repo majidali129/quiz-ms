@@ -1,4 +1,4 @@
-import { AuthProtector } from "@/components/auth-protector";
+// import { AuthProtector } from "@/components/auth-protector";
 import RedirectToast from "@/components/redirect-toast";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { UserRoleStoreProvider } from "@/providers/user-role-store-provider";
