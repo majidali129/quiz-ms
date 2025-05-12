@@ -3,7 +3,6 @@ import { Award, Calendar, Clock, MoreHorizontal, Play, Trophy, User } from "luci
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { isTeacher } from "@/features/utils/is-teacher";
 import { ROLE } from "@/types/index";
 import { format } from "date-fns";
@@ -40,13 +39,6 @@ export const QuizCard = ({ quiz, role }: QuizItemProps) => {
       completed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
     };
     return colors[status];
-  };
-
-  const getProgressValue = (status?: QuizCompleteStatus) => {
-    if (!status) return 0;
-    if (status === "completed") return 100;
-    if (status === "in-progress") return 60;
-    return 0;
   };
 
   const quizMoreMenu = (
