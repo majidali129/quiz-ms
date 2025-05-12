@@ -1,4 +1,4 @@
-import { format, isBefore, parse } from "date-fns";
+import { format } from "date-fns";
 import { ArrowLeft, Award, Calendar, CheckCircle, Clock, Edit, Eye, FileQuestion, Repeat, User } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -47,10 +47,9 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
   const courses = getCourses(user.id);
   const quizResult = await getQuizResult(quiz._id);
   const isAllowToAttempt = !quizResult || quizResult?.attemptNumber < quiz.settings.maxAttempts;
-  const quizStartDateTime = parse(`${quiz.schedule.startDate} ${quiz.schedule.startTime}`, "yyyy-MM-dd HH:mm", new Date());
-  const now = new Date();
+  // const quizStartDateTime = parse(`${quiz.schedule.startDate} ${quiz.schedule.startTime}`, "yyyy-MM-dd HH:mm", new Date());
+  // const now = new Date();
 
-  console.log("quizResult", quizResult);
   // const isBeforeTheTime = isBefore(now, quizStartDateTime);
 
   const stats = await getQuizStats(quiz._id);
