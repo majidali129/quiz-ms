@@ -20,18 +20,18 @@ export const createCourse = async (courseId: string | undefined, _initialState: 
     const validatedData = await createCourseSchema.parseAsync({ ...rawData, requireApproval: rawData.requireApproval === "true" });
     console.log("validatedData", validatedData);
 
-    const existingCourseWithCode = await Course.findOne({ code: validatedData.code }).lean();
-
-    if (existingCourseWithCode) {
-      return toActionState("ERROR", "Course code is already in use. Please use different one.");
-    }
-
     if (courseId) {
       const updatedCourse = await Course.findOneAndUpdate({ _id: courseId, createdBy: user.id }, validatedData);
       if (!updatedCourse) {
         return toActionState("ERROR", "Course not found or not authorized to update", formData);
       }
     } else {
+      const existingCourseWithCode = await Course.findOne({ code: validatedData.code }).lean();
+
+      if (existingCourseWithCode) {
+        return toActionState("ERROR", "Course code is already in use. Please use different one.");
+      }
+
       const newCourse = await Course.create({ ...validatedData, createdBy: user.id });
       if (!newCourse) {
         return toActionState("ERROR", "Error while creating course. Try again later.");
