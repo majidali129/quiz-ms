@@ -74,7 +74,7 @@ export default function CreateCourseForm({ onClose, course }: CreateCourseFormPr
           <Button onClick={onClose} type="button" variant="outline">
             Cancel
           </Button>
-          <SubmitButton label="Create Course" className="w-fit" />
+          <SubmitButton label={course ? "Save Course" : "Create Course"} className="w-fit" />
         </CardFooter>
       </Form>
     </Card>

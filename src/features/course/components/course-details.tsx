@@ -181,12 +181,6 @@ export const CourseDetails = async ({ course, courseEnrollments }: CourseDetails
               </div>
             </div>
           </CardContent>
-
-          {isTeacher(user.role) && (
-            <CardFooter className="flex flex-col sm:flex-row sm:justify-end gap-3 pt-2 border-t">
-              <Button>Edit Course</Button>
-            </CardFooter>
-          )}
         </Card>
 
         {/* Students Section */}
