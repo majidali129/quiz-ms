@@ -1,5 +1,5 @@
-import { format } from "date-fns";
-import { Award, Calendar, CheckCircle2, Clock, FileText, Timer } from "lucide-react";
+import { format, isSameDay, isTomorrow } from "date-fns";
+import { ArrowUpRight, Award, Calendar, CheckCircle2, Clock, FileText } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -20,17 +20,13 @@ function formatDate(date: Date): string {
 }
 
 function formatDueDate(date: Date): string {
+  // const date = parseISO(dateString);
   const now = new Date();
-  const diffTime = Math.abs(date.getTime() - now.getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) {
-    return "Today";
-  } else if (diffDays === 1) {
-    return "Tomorrow";
-  } else {
-    return `In ${diffDays} days`;
-  }
+  if (isSameDay(date, now)) return "Today";
+  if (isTomorrow(date)) return "Tomorrow";
+
+  return format(date, "MMMM dd, yyyy");
 }
 
 export const StudentDashboard = async () => {
@@ -180,10 +176,13 @@ export const StudentDashboard = async () => {
                         </div>
                         <div className="flex flex-col md:items-end mt-4 md:mt-0">
                           <div className="flex items-center gap-2 text-orange-600 font-medium">
-                            <Timer className="h-4 w-4" />
-                            {quiz.schedule.endDate && formatDueDate(new Date(quiz.schedule.endDate))}
+                            {/* <Timer className="h-4 w-4" /> */}
+                            Due: {quiz.schedule.endDate && formatDueDate(new Date(quiz.schedule.endDate))}
                           </div>
-                          <Button className="mt-3 w-full md:w-auto">Start Quiz</Button>
+                          {/* <Button className="mt-3 w-full md:w-auto">Start Quiz</Button> */}
+                          <Link href={quizPath(quiz._id)} className={buttonVariants({ variant: "link" })}>
+                            <ArrowUpRight />
+                          </Link>
                         </div>
                       </div>
                     </CardContent>
@@ -227,11 +226,11 @@ export const StudentDashboard = async () => {
                             {/* <Badge className={`${quiz.isPassed ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{quiz.score}%</Badge> */}
                             <span className="text-sm text-gray-500">{quiz.createdAt && formatDate(quiz.createdAt)}</span>
                           </div>
-                          <Button asChild>
+                          {/* <Button asChild>
                             <Link href={quizPath(quiz._id)} className={buttonVariants({ variant: "outline" })}>
                               View Results
                             </Link>
-                          </Button>
+                          </Button> */}
                         </div>
                       </div>
                     </CardContent>

@@ -9,9 +9,7 @@ import { useActionState } from "react";
 import { registerUser } from "../actions/sign-up";
 
 export const SignUpForm = () => {
-  // const { role } = useUserRole();
   const [formState, signUp] = useActionState(registerUser, Empty_Action_State);
-  // const isStudent = role === "student";
 
   return (
     <Form actionState={formState} onSuccess={() => console.log("Account created succesfully")} action={signUp}>
@@ -19,7 +17,6 @@ export const SignUpForm = () => {
         <FormItem name="fullName" label="FullName" type="text" required={true} placeholder="John doe" formState={formState} />
         <FormItem name="userName" label="Username" type="text" required={true} placeholder="majid129" formState={formState} />
         <FormItem name="email" label="Email" type="email" required={true} placeholder="user@gmail.com" formState={formState} />
-        {/* {isStudent && <FormItem name="registerationId" label="Registeration Id" type="text" required={true} placeholder="Your university id" formState={formState} />} */}
         <FormItem name="password" label="Password" type="password" required={true} placeholder="********" formState={formState} />
         <SubmitButton label="Sign Up" />
       </div>

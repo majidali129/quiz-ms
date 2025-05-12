@@ -101,12 +101,12 @@ export const QuizCard = ({ quiz, role }: QuizItemProps) => {
           <div className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
             {/* <span>{format(startDate, "MM/dd/yyyy")}</span> */}
-            <span>{format(new Date(), "MM/dd/yyyy")}</span>
+            <span>{format(new Date(quiz.schedule.startDate), "MM/dd/yyyy")}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Award className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
             {/* <span>Pass: {passingScore}%</span> */}
-            <span>Pass: {43}%</span>
+            <span>Pass: {quiz.settings.passingScore}%</span>
           </div>
           <div className="flex items-center gap-1.5">
             <User className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
@@ -114,7 +114,7 @@ export const QuizCard = ({ quiz, role }: QuizItemProps) => {
           </div>
         </div>
 
-        {!isTeacher && completionStatus && (
+        {/* {!isTeacher && completionStatus && (
           <div className="mt-4">
             {completionStatus === "in-progress" && (
               <>
@@ -126,7 +126,7 @@ export const QuizCard = ({ quiz, role }: QuizItemProps) => {
               </>
             )}
           </div>
-        )}
+        )} */}
 
         <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center text-xs text-zinc-500 dark:text-zinc-400">
           <span>Created {format(createdAt, "MM/dd/yyyy")}</span>
