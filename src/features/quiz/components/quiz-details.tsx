@@ -47,10 +47,6 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
   const courses = getCourses(user.id);
   const quizResult = await getQuizResult(quiz._id);
   const isAllowToAttempt = !quizResult || quizResult?.attemptNumber < quiz.settings.maxAttempts;
-  // const quizStartDateTime = parse(`${quiz.schedule.startDate} ${quiz.schedule.startTime}`, "yyyy-MM-dd HH:mm", new Date());
-  // const now = new Date();
-
-  // const isBeforeTheTime = isBefore(now, quizStartDateTime);
 
   const stats = await getQuizStats(quiz._id);
 
@@ -133,15 +129,11 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
               </>
             ) : (
               <>
-                {/* {isAllowToAttempt && isBeforeTheTime && ( */}
-                {/* // <Button asChild>
-                  //   <Link href={quizAttemptPath(quiz._id)} className={buttonVariants({ variant: "outline" })}>
-                  //     <MoveUpRightIcon className="h-4 w-4" />
-                  //     Join Quiz
-                  //   </Link>
-                  // </Button> */}
-                {/* // )} */}
-                {isAllowToAttempt && <JoinButton startDate={quiz.schedule.startDate} startTime={quiz.schedule.startTime} endDate={quiz.schedule.endDate} quizId={quiz._id} />}
+                {isAllowToAttempt ? (
+                  <JoinButton startDate={quiz.schedule.startDate} startTime={quiz.schedule.startTime} endDate={quiz.schedule.endDate} quizId={quiz._id} />
+                ) : (
+                  <Badge variant="destructive">No more submissions are allowed. You already have {quiz.settings.maxAttempts} attempts </Badge>
+                )}
               </>
             )}
           </div>

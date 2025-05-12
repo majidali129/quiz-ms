@@ -19,6 +19,8 @@ import { isCourseOwner } from "../utils/is-course-owner";
 import CreateCourseForm from "./course-create-form";
 import { CourseDeleteButton } from "./course-delete-button";
 import { CourseEnrollmentButton } from "./course-enrollment-button";
+import CourseEnrollmentForm from "./course-enrollment-form";
+import { RemoveCourseEnrollmentButton } from "./remove-course-enrollment-button";
 
 // Helper function to get level badge color
 function getLevelColor(level: CourseLevel): string {
@@ -188,10 +190,22 @@ export const CourseDetails = async ({ course, courseEnrollments }: CourseDetails
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Enrolled Students</h2>
-              <Button variant="outline" size="sm">
-                <Users className="h-4 w-4 mr-2" />
-                Add Students
-              </Button>
+              <DialogShell
+                className="sm:!max-w-[32rem]"
+                title="Enroll new student"
+                description="Adding students will help them to get most of it"
+                triggerText="Add Students"
+                trigger={
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Users className="h-4 w-4 mr-2" />
+                      Add Students
+                    </Button>
+                  </DialogTrigger>
+                }
+              >
+                <CourseEnrollmentForm courseId={course._id} />
+              </DialogShell>
             </div>
 
             {activeEnrollments.length ? (
@@ -221,12 +235,10 @@ export const CourseDetails = async ({ course, courseEnrollments }: CourseDetails
                           <TableCell>{enrollment.student.email}</TableCell>
                           <TableCell>{enrollment.enrolledAt}</TableCell>
                           <TableCell className="text-right">
-                            <Button variant="ghost" size="sm">
+                            {/* <Button variant="ghost" size="sm">
                               View
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-red-600">
-                              Remove
-                            </Button>
+                            </Button> */}
+                            <RemoveCourseEnrollmentButton courseId={course._id} studentId={enrollment.student._id} />
                           </TableCell>
                         </TableRow>
                       ))}
@@ -240,7 +252,19 @@ export const CourseDetails = async ({ course, courseEnrollments }: CourseDetails
                   <Users className="h-12 w-12 text-gray-300" />
                   <h3 className="text-lg font-medium">No Students Enrolled</h3>
                   <p className="text-muted-foreground max-w-md mx-auto">There are no students enrolled in this course yet. Add students to get started.</p>
-                  <Button className="mt-4">Add First Student</Button>
+                  <DialogShell
+                    className="sm:!max-w-[32rem]"
+                    title="Enroll new student"
+                    description="Adding students will help them to get most of it"
+                    triggerText="Add Students"
+                    trigger={
+                      <DialogTrigger asChild>
+                        <Button className="mt-4">Add First Student</Button>
+                      </DialogTrigger>
+                    }
+                  >
+                    <CourseEnrollmentForm courseId={course._id} />
+                  </DialogShell>
                 </div>
               </Card>
             )}
