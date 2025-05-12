@@ -17,13 +17,16 @@ interface CourseCardProps {
 
 const CourseCard = async ({ course }: CourseCardProps) => {
   const user = await getAuth();
+  console.log("course", course);
   const studentEnrollments = await getEnrollments(course._id);
   const userRole = user.role;
   const userId = user.id;
 
+  console.log("studentEnrollments", studentEnrollments);
+
   const isCreator = isCourseOwner(course.createdBy._id, userId);
 
-  const isEnrolled = studentEnrollments.some((enrollment) => enrollment.course === course._id && enrollment.enrollmentStatus === EnrollmentStatus.active && enrollment.student._id === user.id);
+  const isEnrolled = studentEnrollments.some((enrollment) => enrollment.course === course?._id && enrollment.enrollmentStatus === EnrollmentStatus.active && enrollment.student?._id === user.id);
   const activeEnrollments = studentEnrollments.filter((enrollment) => enrollment.enrollmentStatus === EnrollmentStatus.active).length;
 
   const courseMoreMenu = (
