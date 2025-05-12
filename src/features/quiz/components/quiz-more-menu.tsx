@@ -36,7 +36,7 @@ export const QuizCardMoreMenu = ({ quiz, trigger, role }: QuizMoreMenuProps) => 
   // );
 
   const viewDetailsButton = (
-    <Link href={quizPath(quiz._id)}>
+    <Link href={quizPath(quiz._id)} prefetch>
       <DropdownMenuItem>
         <Eye className="mr-2 h-4 w-4" />
         <span>View Details</span>
