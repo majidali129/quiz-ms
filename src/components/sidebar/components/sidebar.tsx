@@ -1,8 +1,11 @@
+import { getAuth } from "@/features/auth/queries/get-auth";
+import { ROLE } from "@/types/index";
 import { BoxesIcon } from "lucide-react";
 import { sidebar_items } from "../constants";
 import { SidebarItem } from "./sidebar-item";
 
 const Sidebar = async () => {
+  const user = await getAuth();
   return (
     <aside className="w-[210px] bg-sidebar min-h-screen border-r border-r-primary/10 fixed">
       <div className="w-full px-3 h-15 flex items-center border-b border-border">
@@ -12,8 +15,8 @@ const Sidebar = async () => {
         </h3>
       </div>
       <ul className="px-3 py-3 space-y-2">
-        {sidebar_items["teacher"].map((item) => (
-          <SidebarItem key={item.href} item={item} />
+        {sidebar_items[user.role as ROLE].map((item) => (
+          <SidebarItem key={item?.href} item={item} />
         ))}
       </ul>
     </aside>
