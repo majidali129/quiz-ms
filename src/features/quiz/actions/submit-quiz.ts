@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 export const submitQuiz = async (quizId: string, result: Record<string, number>) => {
   await connectDB();
   try {
-    console.log("Submit quiz called");
+    console.log("Submit quiz called", quizId);
     const user = await getAuth();
     const quiz = await Quiz.findById(quizId).lean().exec();
 

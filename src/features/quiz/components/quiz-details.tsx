@@ -1,5 +1,5 @@
 import { format, isBefore, parse } from "date-fns";
-import { ArrowLeft, Award, Calendar, CheckCircle, Clock, Edit, Eye, FileQuestion, MoveUpRightIcon, Repeat, User } from "lucide-react";
+import { ArrowLeft, Award, Calendar, CheckCircle, Clock, Edit, Eye, FileQuestion, Repeat, User } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -13,11 +13,12 @@ import { getQuizResult } from "@/features/queries/get-quiz-result";
 import { getQuizStats } from "@/features/queries/get-quiz-stats";
 import { isStudent } from "@/features/utils/is-student";
 import { isTeacher } from "@/features/utils/is-teacher";
-import { quizAttemptPath, quizzesPath } from "@/paths/paths";
+import { quizzesPath } from "@/paths/paths";
 import Link from "next/link";
 import { Quiz, QuizCompleteStatus, QuizDifficulty, QuizType } from "../types";
 import { CreateQuizForm } from "./create-quiz-form";
 import { DialogShell } from "./dialog-shell";
+import { JoinButton } from "./join-button";
 import { QuizDeleteButton } from "./quiz-delete-button";
 import { QuizSubmissionResult } from "./quiz-submission-result";
 // Sample student attempts data
@@ -49,7 +50,8 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
   const quizStartDateTime = parse(`${quiz.schedule.startDate} ${quiz.schedule.startTime}`, "yyyy-MM-dd HH:mm", new Date());
   const now = new Date();
 
-  const isBeforeTheTime = isBefore(now, quizStartDateTime);
+  console.log("quizResult", quizResult);
+  // const isBeforeTheTime = isBefore(now, quizStartDateTime);
 
   const stats = await getQuizStats(quiz._id);
 
@@ -132,14 +134,15 @@ export const QuizDetails = async ({ quiz }: QuizDetailsProps) => {
               </>
             ) : (
               <>
-                {isAllowToAttempt && isBeforeTheTime && (
-                  <Button asChild>
-                    <Link href={quizAttemptPath(quiz._id)} className={buttonVariants({ variant: "outline" })}>
-                      <MoveUpRightIcon className="h-4 w-4" />
-                      Join Quiz
-                    </Link>
-                  </Button>
-                )}
+                {/* {isAllowToAttempt && isBeforeTheTime && ( */}
+                {/* // <Button asChild>
+                  //   <Link href={quizAttemptPath(quiz._id)} className={buttonVariants({ variant: "outline" })}>
+                  //     <MoveUpRightIcon className="h-4 w-4" />
+                  //     Join Quiz
+                  //   </Link>
+                  // </Button> */}
+                {/* // )} */}
+                {isAllowToAttempt && <JoinButton startDate={quiz.schedule.startDate} startTime={quiz.schedule.startTime} endDate={quiz.schedule.endDate} quizId={quiz._id} />}
               </>
             )}
           </div>

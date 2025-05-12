@@ -4,7 +4,11 @@ import { ActionState, fromErrorToActionState, toActionState } from "@/components
 import { connectDB } from "@/lib/connect-db";
 import { coursesPath } from "@/paths/paths";
 import { revalidatePath } from "next/cache";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
+
+const courseEnrollmentSchema = z.object({
+  //   student: z.string().min,
+});
 
 export const courseEnrollmentByTeacher = async (courseId: string, _initialState: ActionState, formData: FormData) => {
   await connectDB();

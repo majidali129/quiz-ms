@@ -20,7 +20,7 @@ const QuizList = async ({ className }: CourseListProps) => {
   return (
     <div className={cn("p-4 space-y-7", className)}>
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl tracking-wide">Quizzes</h2>
+        <h2 className="text-3xl tracking-wide">Quizzes ({quizzes.length})</h2>
         {isTeacher(user.role) && (
           <DialogShell
             title="Create new quiz"
