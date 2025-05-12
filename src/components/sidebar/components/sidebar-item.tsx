@@ -14,7 +14,6 @@ const SidebarItem = ({ item: { href, label, icon } }: SidebarItemProps) => {
   const isActive = pathName.startsWith(href);
   return (
     <Link
-      prefetch
       href={href}
       className={`flex items-center rounded  justify-center lg:justify-start py-2 px-4 gap-2   text-sidebar-foreground/90 hover:text-sidebar-foreground ${
         isActive ? "bg-primary/80 hover:bg-primary" : "bg-zinc-100 dark:bg-zinc-800/40 hover:bg-zinc-200 dark:hover:bg-zinc-800/90"
