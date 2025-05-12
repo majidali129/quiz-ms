@@ -38,7 +38,7 @@ export const CourseCardMoreMenu = ({ course, trigger, isEnrolled }: QuizMoreMenu
   });
 
   const viewDetailsButton = (
-    <Link href={coursePath(course._id)}>
+    <Link href={coursePath(course._id)} prefetch>
       <DropdownMenuItem>
         <Eye className="mr-2 h-4 w-4" />
         <span>View Details</span>

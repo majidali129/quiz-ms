@@ -154,7 +154,7 @@ export const StudentDashboard = async () => {
                 upcomingQuizzes.map((quiz) => (
                   <Card key={quiz._id}>
                     <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between p-6">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between px-6 py-3">
                         <div className="flex flex-col md:flex-row md:items-center gap-4">
                           <div className="bg-blue-50 p-4 rounded-lg">
                             <Calendar className="h-6 w-6 text-blue-600" />
@@ -201,7 +201,7 @@ export const StudentDashboard = async () => {
                 recentQuizzes.map((quiz) => (
                   <Card key={quiz._id}>
                     <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between p-6">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between px-6 py-3">
                         <div className="flex flex-col md:flex-row md:items-center gap-4">
                           <div className={`p-4 rounded-lg bg-green-50 `}>
                             <CheckCircle2 className="h-6 w-6 text-green-600" />{" "}
@@ -249,7 +249,7 @@ export const StudentDashboard = async () => {
                 availableQuizzes.map((quiz) => (
                   <Card key={quiz._id}>
                     <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between p-6">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between px-6 py-3">
                         <div className="flex flex-col md:flex-row md:items-center gap-4">
                           <div className="bg-slate-50 p-4 rounded-lg">
                             <FileText className="h-6 w-6 text-slate-600" />
